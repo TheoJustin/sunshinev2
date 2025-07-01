@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "sunshinev2_backend": {
+      "main": "src/sunshinev2_backend/main.mo",
+      "type": "motoko"
+    },
+    "sunshinev2_frontend": {
+      "dependencies": [
+        "sunshinev2_backend"
+      ],
+      "source": [
+        "src/sunshinev2_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "sunshinev2_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
