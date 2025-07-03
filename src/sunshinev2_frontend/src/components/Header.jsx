@@ -2,25 +2,23 @@ import { Button } from "./ui/button"
 import {
     Brain,
 } from "lucide-react"
-import { AuthClient } from "@dfinity/auth-client"
-import { HttpAgent } from "@dfinity/agent";
-import { createActor, sunshinev2_backend, canisterId, idlFactory } from "../../../declarations/sunshinev2_backend";
 import { canisterId as IICanisterId } from "../../../declarations/internet_identity";
 import {
-  ActorProvider,
-  CandidAdapterProvider,
-  useAuth,
-  useQueryCall,
+    ActorProvider,
+    CandidAdapterProvider,
+    useAuth,
+    useQueryCall,
 } from '@ic-reactor/react';
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+    const nav = useNavigate();
     const { login, logout, authenticated, identity, loginError } = useAuth({
         onLoginSuccess: (principal) => {
             console.log(`Logged in as ${principal}`);
         },
         onLoginError: (error) => console.error(`Login failed: ${error}`),
     });
-    let actor = sunshinev2_backend
 
     const handleLogin = async () => {
         let IIUrl = process.env.DFX_NETWORK === "ic" ? "https://identity.ic0.app/#authorize" : `http://${IICanisterId}.localhost:4943/`
@@ -32,14 +30,17 @@ function Header() {
         } catch (error) {
             console.log(error)
         }
-
         return false;
     }
 
-    const greet = async () => {
-        const greeting = await actor.greet();
-
-        console.log(greeting)
+    const handleLogout = async () => {
+        try {
+            await logout();
+            nav('/');
+            window.location.reload();
+        } catch (error) {
+            console.error("Logout error: ", error);
+        }
     }
 
     return (
@@ -62,12 +63,18 @@ function Header() {
                         <a href="#pricing" className="text-teal-700 hover:text-teal-900 transition-colors font-medium">
                             Pricing
                         </a>
-                        <Button onClick={handleLogin} className="bg-orange-400 hover:bg-orange-500 text-white border-0">Login</Button>
-                        <Button onClick={greet} className="bg-orange-400 hover:bg-orange-500 text-white border-0">Connect Wallet</Button>
+                        {authenticated ? (
+                            <Button onClick={handleLogout} className="bg-orange-400 hover:bg-orange-500 text-white border-0">Log Out</Button>
+                        ) : (
+                            <Button onClick={handleLogin} className="bg-orange-400 hover:bg-orange-500 text-white border-0">Login</Button>
+                        )}
+                        {authenticated && (
+                            <Button className="bg-orange-400 hover:bg-orange-500 text-white border-0">Connect Wallet</Button>
+                        )}
                     </div>
                 </div>
             </div>
-        </nav>
+        </nav >
     );
 }
 
