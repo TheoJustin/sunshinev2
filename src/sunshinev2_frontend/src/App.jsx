@@ -3,17 +3,17 @@ import { sunshinev2_backend } from 'declarations/sunshinev2_backend';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import RootLayout from './layouts/RootLayout';
 import HomePage from './pages/HomePage';
-import { AgentProvider, useQueryCall, useUpdateCall } from '@ic-reactor/react';
+import LandingPage from './pages/LandingPage';
+import { AgentProvider } from '@ic-reactor/react';
 
 function App() {
-
   return (
-    <div className='min-h-screen bg-gradient-to-br from-green-50 via-green-100 to-teal-50'>
+    <div className='min-h-screen bg-[#0B1120]'>
       <AgentProvider withProcessEnv>
         <BrowserRouter>
           <Routes>
             <Route element={<RootLayout />}>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<LandingPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
