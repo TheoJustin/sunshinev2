@@ -1,15 +1,15 @@
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { Button } from './ui/button'
 import { Brain } from 'lucide-react'
 import { AuthClient } from '@dfinity/auth-client'
 import { HttpAgent } from '@dfinity/agent'
 import { sunshinev2_backend } from '../../../declarations/sunshinev2_backend'
 import { canisterId as IICanisterId } from '../../../declarations/internet_identity'
-import { useAuth } from '@ic-reactor/react'
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { theme } from '../lib/theme'
 import { ActorProvider, CandidAdapterProvider, useAuth, useQueryCall } from '@ic-reactor/react'
-import { useNavigate } from 'react-router-dom'
+
+import { theme } from '../lib/theme'
 
 function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
