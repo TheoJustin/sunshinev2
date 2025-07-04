@@ -31,7 +31,6 @@ export function Features() {
             <FeatureCard
               key={index}
               feature={feature}
-              index={index}
               theme={theme}
             />
           ))}

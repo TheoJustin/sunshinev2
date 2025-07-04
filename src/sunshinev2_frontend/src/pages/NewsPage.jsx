@@ -30,11 +30,10 @@ export default function NewsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {news.map((news, index) => (
+          {news.map(news => (
             <NewsCard
               key={news.id}
               news={news}
-              index={index}
             />
           ))}
         </div>

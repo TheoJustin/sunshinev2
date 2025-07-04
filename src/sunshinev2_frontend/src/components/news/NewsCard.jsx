@@ -1,17 +1,14 @@
 import { motion } from 'framer-motion'
 
-export function NewsCard({ news, index }) {
+export function NewsCard({ news }) {
   return (
     <motion.a
       href={news.url}
-      target="_blank"
-      rel="noopener noreferrer"
       className="group relative flex items-center gap-4 p-4 rounded-xl backdrop-blur-xl bg-white/5 border border-white/10 hover:border-orange-500/50 transition-all duration-300 overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.5 }}
       viewport={{ once: true }}
-      whileHover={{ scale: 1.01 }}
     >
       <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -35,10 +32,8 @@ export function NewsCard({ news, index }) {
           {news.headline}
         </h3>
         <div className="flex items-center text-orange-500 text-sm">
-          <span className="group-hover:opacity-100">Read article</span>
-          <span className="ml-1 group-hover:translate-x-2 transition-transform duration-300">
-            →
-          </span>
+          <span>Read article</span>
+          <span className="ml-1">→</span>
         </div>
       </div>
     </motion.a>
