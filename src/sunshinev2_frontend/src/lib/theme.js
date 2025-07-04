@@ -1,8 +1,8 @@
 export const theme = {
   colors: {
     primary: {
-      from: '#FF6B00', // Vibrant orange
-      to: '#FF9900', // Warm orange
+      from: '#FF6B00',
+      to: '#FF9900',
       hover: {
         from: '#FF5500',
         to: '#FF8800'
