@@ -3,12 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Button } from './ui/button'
 import { Brain } from 'lucide-react'
-import { AuthClient } from '@dfinity/auth-client'
-import { HttpAgent } from '@dfinity/agent'
 import { sunshinev2_backend } from '../../../declarations/sunshinev2_backend'
 import { canisterId as IICanisterId } from '../../../declarations/internet_identity'
 import { ActorProvider, CandidAdapterProvider, useAuth, useQueryCall } from '@ic-reactor/react'
-
 import { theme } from '../lib/theme'
 
 function Header() {
