@@ -1,10 +1,10 @@
 import React from 'react'
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { theme } from '../lib/theme'
-import { Hero } from '../components/landing/Hero'
+import { Jumbotron } from '../components/landing/Jumbotron'
 import { Features } from '../components/landing/Features'
 import { Demo } from '../components/landing/Demo'
-import { Footer } from '../components/landing/Footer'
+import { Footer } from '../components/Footer'
 
 function LandingPage() {
   const { scrollY } = useScroll()
@@ -29,10 +29,9 @@ function LandingPage() {
         />
       </div>
 
-      <Hero scrollY={scrollY} />
+      <Jumbotron scrollY={scrollY} />
       <Features />
       <Demo />
-      <Footer />
     </div>
   )
 }

@@ -87,10 +87,10 @@ function Header() {
             </span>
           </motion.div>
           <div className="hidden md:flex items-center space-x-8">
-            {['Features', 'Analytics', 'Predictions'].map(item => (
+            {['Features', 'Analytics', 'Predictions', 'News'].map(item => (
               <motion.a
                 key={item}
-                href={`#${item.toLowerCase()}`}
+                href={`/${item === 'Features' ? `#${item.toLowerCase()}` : item.toLowerCase()}`}
                 className="text-gray-300 hover:text-white transition-colors font-medium relative group"
                 whileHover={{ y: -2 }}
               >
