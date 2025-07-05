@@ -7,6 +7,7 @@ import { sunshinev2_backend } from '../../../declarations/sunshinev2_backend'
 import { canisterId as IICanisterId } from '../../../declarations/internet_identity'
 import { ActorProvider, CandidAdapterProvider, useAuth, useQueryCall } from '@ic-reactor/react'
 import { theme } from '../lib/theme'
+import logo from '/logo.svg'
 
 function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -75,13 +76,21 @@ function Header() {
             whileHover={{ scale: 1.05 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
           >
-            <div
-              className={`w-8 h-8 bg-gradient-to-r ${theme.gradients.primary} rounded-lg flex items-center justify-center`}
+            <div >
+
+            </div>
+            <div 
             >
-              <Brain className="w-5 h-5 text-white" />
+              <img               
+                src={logo} 
+                alt="SignalScribe Logo" 
+                className="w-12 h-12 brightness-0 invert" 
+              />
             </div>
             <span
-              className={`text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${theme.gradients.primary}`}
+              className={`text-xl font-bold bg-clip-text text-transparent 
+                bg-gradient-to-r ${theme.gradients.primary}
+              `}
             >
               SignalScribe
             </span>
