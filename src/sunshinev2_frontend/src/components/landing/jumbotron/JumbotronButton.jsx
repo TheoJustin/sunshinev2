@@ -6,7 +6,7 @@ export function JumbotronButton({ href, variant = 'primary', children }) {
     'group px-8 py-4 rounded-xl text-white font-semibold flex items-center justify-center'
   const variants = {
     primary: `bg-gradient-to-r ${theme.gradients.primary} shadow-lg hover:shadow-orange-500/25`,
-    secondary: 'bg-white/10 backdrop-blur-sm hover:bg-white/15',
+    secondary: 'bg-white/10 hover:bg-white/15',
   }
 
   return (

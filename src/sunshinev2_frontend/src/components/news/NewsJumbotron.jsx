@@ -4,7 +4,7 @@ export function NewsJumbotron({ news }) {
   return (
     <motion.a
       href={news.url}
-      className="group block relative overflow-hidden rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10 hover:border-orange-500/50 transition-all duration-300"
+      className="group block relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 hover:border-orange-500/50 transition-all duration-300"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}

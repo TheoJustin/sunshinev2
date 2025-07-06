@@ -5,7 +5,7 @@ import { theme } from '../../../lib/theme'
 export function FeatureCard({ feature }) {
   return (
     <motion.div
-      className="cursor-pointer group p-8 backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 hover:border-orange-500/50"
+      className="cursor-pointer group p-8 bg-white/5 rounded-2xl border border-white/10 hover:border-orange-500/50"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{

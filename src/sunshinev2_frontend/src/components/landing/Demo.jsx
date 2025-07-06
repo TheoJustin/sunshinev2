@@ -17,7 +17,7 @@ export function Demo() {
     >
       <div className="max-w-6xl mx-auto">
         <motion.div
-          className="backdrop-blur-xl bg-white/5 rounded-3xl border border-white/10 p-8 overflow-hidden"
+          className="bg-white/5 rounded-3xl border border-white/10 p-8 overflow-hidden"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}

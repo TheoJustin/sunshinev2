@@ -20,11 +20,11 @@ function LandingPage() {
       />
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
         <motion.div
-          className={`absolute top-[10%] left-[5%] w-72 h-72 rounded-full blur-3xl ${theme.gradients.glow.primary}`}
+          className={`absolute top-[10%] left-[5%] w-72 h-72 rounded-full ${theme.gradients.glow.primary}`}
           style={{ y: ySpring }}
         />
         <motion.div
-          className={`absolute bottom-[20%] right-[10%] w-96 h-96 rounded-full blur-3xl ${theme.gradients.glow.secondary}`}
+          className={`absolute bottom-[20%] right-[10%] w-96 h-96 rounded-full ${theme.gradients.glow.secondary}`}
           style={{ y: useSpring(useTransform(scrollY, [0, 500], [0, 100]), springConfig) }}
         />
       </div>
@@ -36,4 +36,4 @@ function LandingPage() {
   )
 }
 
-export default LandingPage;
+export default LandingPage

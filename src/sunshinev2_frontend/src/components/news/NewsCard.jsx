@@ -4,7 +4,7 @@ export function NewsCard({ news }) {
   return (
     <motion.a
       href={news.url}
-      className="group relative flex items-center gap-4 p-4 rounded-xl backdrop-blur-xl bg-white/5 border border-white/10 hover:border-orange-500/50 transition-all duration-300 overflow-hidden"
+      className="group relative flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-orange-500/50 transition-all duration-300 overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
