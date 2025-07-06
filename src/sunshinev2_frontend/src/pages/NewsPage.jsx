@@ -5,7 +5,7 @@ import { jumboNews, news } from '../constants/news'
 import { NewsJumbotron } from '../components/news/NewsJumbotron'
 import { NewsCard } from '../components/news/NewsCard'
 
-export default function NewsPage() {
+function NewsPage() {
   return (
     <div className="min-h-screen py-16 px-4">
       <div className="max-w-6xl mx-auto">
@@ -41,3 +41,5 @@ export default function NewsPage() {
     </div>
   )
 }
+
+export default NewsPage;

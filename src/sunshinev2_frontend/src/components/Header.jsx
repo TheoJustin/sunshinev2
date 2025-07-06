@@ -55,16 +55,17 @@ function Header() {
     }
   }
 
-  const greet = async () => {
+  const handleConnectWallet = async () => {
+    // PLACEHOLDER
+    // KONEK WALLET DISINI
     const greeting = await actor.greet()
     console.log(greeting)
   }
 
   return (
     <motion.nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-[#0B1120]/95 backdrop-blur-md' : 'bg-transparent'
-      }`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0B1120]/95 backdrop-blur-md' : 'bg-transparent'
+        }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -79,12 +80,12 @@ function Header() {
             <div >
 
             </div>
-            <div 
+            <div
             >
-              <img               
-                src={logo} 
-                alt="SignalScribe Logo" 
-                className="w-12 h-12 brightness-0 invert" 
+              <img
+                src={logo}
+                alt="SignalScribe Logo"
+                className="w-12 h-12 brightness-0 invert"
               />
             </div>
             <span
@@ -111,6 +112,19 @@ function Header() {
                 />
               </motion.a>
             ))}
+            {authenticated && (
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  onClick={handleConnectWallet}
+                  className="bg-white/10 backdrop-blur-sm text-white border-0 hover:bg-white/20 transition-all duration-300"
+                >
+                  Connect Wallet
+                </Button>
+              </motion.div>
+            )}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -120,17 +134,6 @@ function Header() {
                 className={`bg-gradient-to-r ${theme.gradients.primary} text-white border-0 hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300`}
               >
                 {authenticated ? 'Logout' : 'Login'}
-              </Button>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                onClick={greet}
-                className="bg-white/10 backdrop-blur-sm text-white border-0 hover:bg-white/20 transition-all duration-300"
-              >
-                Connect Wallet
               </Button>
             </motion.div>
           </div>
