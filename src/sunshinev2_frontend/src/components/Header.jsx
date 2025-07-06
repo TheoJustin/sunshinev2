@@ -56,8 +56,15 @@ function Header() {
   }
 
   const handleConnectWallet = async () => {
-    // PLACEHOLDER
-    // KONEK WALLET DISINI
+    ;(async () => {
+      try {
+        const publicKey = await window.ic.plug.requestConnect()
+        console.log(`The connected user's public key is:`, publicKey)
+      } catch (e) {
+        console.log(e)
+      }
+    })()
+
     const greeting = await actor.greet()
     console.log(greeting)
   }
