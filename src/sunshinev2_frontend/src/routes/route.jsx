@@ -1,18 +1,24 @@
+import * as path from 'path'
 import LandingPage from '../pages/LandingPage'
 import NewsPage from '../pages/NewsPage'
 import PredictionPage from '../pages/PredictionPage'
+import PortfolioPage from '../pages/PortfolioPage'
 
 export const ROUTES = [
   {
     path: '/',
-    element: <LandingPage />
+    element: <LandingPage />,
   },
   {
     path: '/news',
-    element: <NewsPage />
+    element: <NewsPage />,
   },
   {
     path: '/predictions',
-    element: <PredictionPage />
-  }
+    element: <PredictionPage />,
+  },
+  {
+    path: '/portfolio',
+    element: <PortfolioPage />,
+  },
 ]
