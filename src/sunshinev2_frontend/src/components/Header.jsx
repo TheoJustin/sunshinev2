@@ -60,14 +60,17 @@ function Header() {
   }
 
   const handleConnectWallet = () => {
-    connectWallet()
+    connectWallet();
+  }
+
+  const handleDisconnectWallet = () => {
+    disconnectWallet();
   }
 
   return (
     <motion.nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-[#0B1120]/95 ' : 'bg-transparent'
-      }`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0B1120]/95 ' : 'bg-transparent'
+        }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -112,11 +115,23 @@ function Header() {
               </motion.a>
             ))}
             {authenticated && (
-              <>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {isConnected ? (
+                  <Button
+                    onClick={handleDisconnectWallet}
+                    disabled={isLoading}
+                    className="bg-white/10 text-white border-0 hover:bg-white/20 transition-all duration-300"
+                  >
+                    {isLoading
+                      ? 'Disconnecting...'
+                      : isConnected
+                        ? 'Wallet Disconnected'
+                        : 'Disconnect Wallet'}
+                  </Button>
+                ) : (
                   <Button
                     onClick={handleConnectWallet}
                     disabled={isLoading}
@@ -128,8 +143,8 @@ function Header() {
                         ? 'Wallet Connected'
                         : 'Connect Wallet'}
                   </Button>
-                </motion.div>
-              </>
+                )}
+              </motion.div>
             )}
             <motion.div
               whileHover={{ scale: 1.05 }}
