@@ -56,17 +56,54 @@ function Header() {
   }
 
   const handleConnectWallet = async () => {
-    ;(async () => {
-      try {
-        const publicKey = await window.ic.plug.requestConnect()
-        console.log(`The connected user's public key is:`, publicKey)
-      } catch (e) {
-        console.log(e)
+    try {
+      if (!window.ethereum) {
+        alert('MetaMask is not installed. Please install the MetaMask extension first.')
+        window.open('https://metamask.io/download/', '_blank')
+        return
       }
-    })()
 
-    const greeting = await actor.greet()
-    console.log(greeting)
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+      if (accounts.length > 0) {
+        console.log('MetaMask is already connected:', accounts[0])
+        return
+      }
+
+      const requestedAccounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      })
+
+      console.log('Connected to MetaMask. Account:', requestedAccounts[0])
+
+      const chainId = await window.ethereum.request({ method: 'eth_chainId' })
+      const balance = await window.ethereum.request({
+        method: 'eth_getBalance',
+        params: [requestedAccounts[0], 'latest'],
+      })
+
+      console.log('Chain ID:', chainId)
+      console.log('Balance:', parseInt(balance, 16) / 1e18, 'ETH')
+
+      window.ethereum.on('accountsChanged', accounts => {
+        console.log('Account changed:', accounts[0])
+      })
+
+      window.ethereum.on('chainChanged', chainId => {
+        console.log('Chain changed:', chainId)
+      })
+    } catch (error) {
+      console.error('Error connecting to MetaMask:', error)
+
+      if (error.code === 4001) {
+        console.log('User rejected the connection request')
+      } else if (error.code === -32002) {
+        alert(
+          'MetaMask is already processing a connection request. Please check your MetaMask extension.',
+        )
+      } else {
+        alert(`Failed to connect to MetaMask: ${error.message}`)
+      }
+    }
   }
 
   return (
