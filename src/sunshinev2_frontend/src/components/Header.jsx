@@ -7,10 +7,15 @@ import { canisterId as IICanisterId } from '../../../declarations/internet_ident
 import { ActorProvider, CandidAdapterProvider, useAuth, useQueryCall } from '@ic-reactor/react'
 import { theme } from '../lib/theme'
 import logo from '/logo.svg'
+import { useWallet } from '../contexts/WalletContext'
 
 function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   let actor = sunshinev2_backend
+
+  const { isConnected, account, ethBalance, connectWallet, disconnectWallet, isLoading } =
+    useWallet()
+
   const nav = useNavigate()
   const { login, logout, authenticated, identity, loginError } = useAuth({
     onLoginSuccess: principal => {
@@ -54,61 +59,15 @@ function Header() {
     }
   }
 
-  const handleConnectWallet = async () => {
-    try {
-      if (!window.ethereum) {
-        alert('MetaMask is not installed. Please install the MetaMask extension first.')
-        window.open('https://metamask.io/download/', '_blank')
-        return
-      }
-
-      const accounts = await window.ethereum.request({ method: 'eth_accounts' })
-      if (accounts.length > 0) {
-        console.log('MetaMask is already connected:', accounts[0])
-        return
-      }
-
-      const requestedAccounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      })
-
-      console.log('Connected to MetaMask. Account:', requestedAccounts[0])
-
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' })
-      const balance = await window.ethereum.request({
-        method: 'eth_getBalance',
-        params: [requestedAccounts[0], 'latest'],
-      })
-
-      console.log('Chain ID:', chainId)
-      console.log('Balance:', parseInt(balance, 16) / 1e18, 'ETH')
-
-      window.ethereum.on('accountsChanged', accounts => {
-        console.log('Account changed:', accounts[0])
-      })
-
-      window.ethereum.on('chainChanged', chainId => {
-        console.log('Chain changed:', chainId)
-      })
-    } catch (error) {
-      console.error('Error connecting to MetaMask:', error)
-
-      if (error.code === 4001) {
-        console.log('User rejected the connection request')
-      } else if (error.code === -32002) {
-        alert(
-          'MetaMask is already processing a connection request. Please check your MetaMask extension.',
-        )
-      } else {
-        alert(`Failed to connect to MetaMask: ${error.message}`)
-      }
-    }
+  const handleConnectWallet = () => {
+    connectWallet()
   }
 
   return (
     <motion.nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0B1120]/95 ' : 'bg-transparent'
-        }`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-[#0B1120]/95 ' : 'bg-transparent'
+      }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -153,17 +112,33 @@ function Header() {
               </motion.a>
             ))}
             {authenticated && (
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  onClick={handleConnectWallet}
-                  className="bg-white/10 text-white border-0 hover:bg-white/20 transition-all duration-300"
+              <>
+                {/* {isConnected && (
+                  <div className="text-sm text-gray-300">
+                    <div>Balance: {ethBalance.toFixed(4)} ETH</div>
+                    <div>
+                      Account: {account?.slice(0, 6)}...{account?.slice(-4)}
+                    </div>
+                  </div>
+                )} */}
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Connect Wallet
-                </Button>
-              </motion.div>
+                  <Button
+                    onClick={handleConnectWallet}
+                    disabled={isLoading}
+                    className="bg-white/10 text-white border-0 hover:bg-white/20 transition-all duration-300"
+                  >
+                    {isLoading
+                      ? 'Connecting...'
+                      : isConnected
+                        ? 'Wallet Connected'
+                        : 'Connect Wallet'}
+                  </Button>
+                </motion.div>
+              </>
             )}
             <motion.div
               whileHover={{ scale: 1.05 }}
