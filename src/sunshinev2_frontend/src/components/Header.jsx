@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Button } from './ui/button'
-import { Brain } from 'lucide-react'
 import { sunshinev2_backend } from '../../../declarations/sunshinev2_backend'
 import { canisterId as IICanisterId } from '../../../declarations/internet_identity'
 import { ActorProvider, CandidAdapterProvider, useAuth, useQueryCall } from '@ic-reactor/react'
@@ -108,9 +107,8 @@ function Header() {
 
   return (
     <motion.nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-[#0B1120]/95 ' : 'bg-transparent'
-      }`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0B1120]/95 ' : 'bg-transparent'
+        }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -173,6 +171,7 @@ function Header() {
             >
               <Button
                 onClick={authenticated ? handleLogout : handleLogin}
+                variant={'default'}
                 className={`bg-gradient-to-r ${theme.gradients.primary} text-white border-0 hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300`}
               >
                 {authenticated ? 'Logout' : 'Login'}
