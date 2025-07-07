@@ -113,15 +113,6 @@ function Header() {
             ))}
             {authenticated && (
               <>
-                {/* {isConnected && (
-                  <div className="text-sm text-gray-300">
-                    <div>Balance: {ethBalance.toFixed(4)} ETH</div>
-                    <div>
-                      Account: {account?.slice(0, 6)}...{account?.slice(-4)}
-                    </div>
-                  </div>
-                )} */}
-
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
