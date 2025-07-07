@@ -82,10 +82,10 @@ function Header() {
         <div className="flex justify-between items-center h-16">
           <motion.div
             className="flex items-center space-x-2"
+            onClick={() => nav('/')}
             whileHover={{ scale: 1.05 }}
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
           >
-            <div></div>
             <div>
               <img
                 src={logo}
