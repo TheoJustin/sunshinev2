@@ -4,6 +4,10 @@ import Text "mo:base/Text";
 import IC "ic:aaaaa-aa";
 
 actor {
+  public query func testing() : async Text {
+    return "Test";
+  };
+
   public query func transform({
     context : Blob;
     response : IC.http_request_result;

@@ -1,7 +1,6 @@
 import { ResponsiveLine } from '@nivo/line'
 
-
-export function Graph({data}) {
+export function Graph({ data }) {
 
     const theme = {
         "background": "#000000",
@@ -14,7 +13,7 @@ export function Graph({data}) {
         "axis": {
             "domain": {
                 "line": {
-                    "stroke": "#383838",
+                    "stroke": "#3838fff38",
                     "strokeWidth": 1
                 }
             },
@@ -111,6 +110,12 @@ export function Graph({data}) {
             "table": {},
             "tableCell": {},
             "tableCellValue": {}
+        },
+        "crosshair": {
+            "line": {
+                "stroke": "#ffffff", // Set hover line (crosshair) to white
+                "strokeWidth": 1
+            }
         }
     }
 
@@ -160,7 +165,7 @@ export function Graph({data}) {
                             ))}
                         </div>
                     )
-                }}   
+                }}
                 markers={[
                     {
                         axis: 'x',
@@ -172,7 +177,7 @@ export function Graph({data}) {
                             fontSize: 12
                         }
                     },
-                ]}     
+                ]}
             />
         </div>
     )
