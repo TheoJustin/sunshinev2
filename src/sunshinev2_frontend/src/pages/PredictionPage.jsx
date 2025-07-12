@@ -1,25 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Graph } from "../components/prediction/Graph"
 import { sunshinev2_prediction } from "../../../declarations/sunshinev2_prediction"
 import { Badge } from "../components/ui/badge"
 import { TrendingUp, Activity, Search } from "lucide-react"
-
-const COIN_LIST = [
-  { id: "bitcoin", name: "Bitcoin", symbol: "BTC", color: "#F7931A" },
-  { id: "ethereum", name: "Ethereum", symbol: "ETH", color: "#627EEA" },
-  { id: "binancecoin", name: "Binance Coin", symbol: "BNB", color: "#F3BA2F" },
-  { id: "cardano", name: "Cardano", symbol: "ADA", color: "#0033AD" },
-  { id: "solana", name: "Solana", symbol: "SOL", color: "#9945FF" },
-  { id: "polkadot", name: "Polkadot", symbol: "DOT", color: "#E6007A" },
-  { id: "dogecoin", name: "Dogecoin", symbol: "DOGE", color: "#C2A633" },
-  { id: "avalanche-2", name: "Avalanche", symbol: "AVAX", color: "#E84142" },
-  { id: "chainlink", name: "Chainlink", symbol: "LINK", color: "#375BD2" },
-  { id: "polygon", name: "Polygon", symbol: "MATIC", color: "#8247E5" },
-  { id: "litecoin", name: "Litecoin", symbol: "LTC", color: "#BFBBBB" },
-  { id: "uniswap", name: "Uniswap", symbol: "UNI", color: "#FF007A" },
-]
+import { DUMMY_COIN_LIST, DUMMY_HISTORICAL_DATA } from "../constants/graph"
 
 function PredictionPage() {
   const [inputValue, setInputValue] = useState("")
@@ -27,35 +13,61 @@ function PredictionPage() {
   const [selectedCoin, setSelectedCoin] = useState("ethereum")
   const [searchTerm, setSearchTerm] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const cache = useRef(new Map());
 
-  async function fetchPredictions(coin = "ethereum") {
-    if (!coin || typeof coin !== "string") {
-      console.error("Invalid coin parameter:", coin)
-      setPredictionData([])
-      return
+  async function fetchPredictions(coin = 'ethereum') {
+    if (!coin || typeof coin !== 'string') {
+      console.error('Invalid coin parameter:', coin);
+      setPredictionData([]);
+      return;
     }
 
-    setIsLoading(true)
-    try {
-      const coinParam = coin ? [coin] : []
-      const res = await sunshinev2_prediction.getPredictions(coinParam)
-      console.log("API response:", res)
+    if (cache.current.has(coin)) {
+      setPredictionData(cache.current.get(coin));
+      return;
+    }
 
-      let parsedData
+    setIsLoading(true);
+    try {
+      const coinParam = coin ? [coin] : [];
+      const res = await sunshinev2_prediction.getPredictions(coinParam);
+      console.log('API response:', res);
+
+      let parsedData;
       try {
-        parsedData = JSON.parse(res)
+        parsedData = JSON.parse(res);
       } catch (parseError) {
-        console.error("Error parsing API response:", parseError)
-        setPredictionData([])
-        return
+        console.error('Error parsing API response:', parseError);
+        setPredictionData([]);
+        return;
       }
 
-      setPredictionData(parsedData)
+      const coinData = DUMMY_COIN_LIST.find(c => c.id === parsedData.coin);
+      if (!coinData || !Array.isArray(parsedData.predictions)) {
+        console.error('Invalid API response format:', parsedData);
+        setPredictionData([]);
+        return;
+      }
+
+      const historicalData = DUMMY_HISTORICAL_DATA[parsedData.coin] || [];
+      const predictionDataPoints = parsedData.predictions.map((price, index) => ({
+        x: `${index + 1}`,
+        y: price
+      }));
+
+      const transformedData = [{
+        id: coinData.symbol,
+        color: coinData.color,
+        data: [...historicalData, ...predictionDataPoints]
+      }];
+      
+      cache.current.set(coin, transformedData);
+      setPredictionData(transformedData);
     } catch (error) {
-      console.error("Error fetching predictions for", coin, ":", error)
-      setPredictionData([])
+      console.error('Error fetching predictions for', coin, ':', error);
+      setPredictionData([]);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -67,34 +79,32 @@ function PredictionPage() {
     setSelectedCoin(coinId)
   }
 
-  const filteredCoins = COIN_LIST.filter(
+  const filteredCoins = DUMMY_COIN_LIST.filter(
     (coin) =>
       coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       coin.symbol.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-  const selectedCoinData = COIN_LIST.find((coin) => coin.id === selectedCoin)
+  const selectedCoinData = DUMMY_COIN_LIST.find((coin) => coin.id === selectedCoin)
 
-  // Mock data for demonstration - replace with actual predictionData when available
-  const data = [
+  const data = !isLoading && predictionData.length > 0 ? predictionData : [
     {
-      id: selectedCoinData?.symbol || "BTC",
+      id: selectedCoinData?.symbol || 'ETH',
+      color: selectedCoinData?.color || '#627EEA',
       data: [
-        { x: "10", y: 50 },
-        { x: "11", y: 211 },
-        { x: "12", y: 283 },
-        { x: "13", y: 1 },
-        { x: "14", y: 129 },
-        { x: "15", y: 242 },
-        { x: "16", y: 274 },
-        { x: "17", y: 233 },
-        { x: "18", y: 105 },
-        { x: "19", y: 2 },
-        { x: "20", y: 237 },
-        { x: "21", y: 43 },
+        ...(DUMMY_HISTORICAL_DATA[selectedCoin] || DUMMY_HISTORICAL_DATA.ethereum),
+        { x: '1', y: 1995.7147216796875 },
+        { x: '2', y: 1964.3731689453125 },
+        { x: '3', y: 1938.6651611328125 },
+        { x: '4', y: 1924.395751953125 },
+        { x: '5', y: 1917.40234375 },
+        { x: '6', y: 1898.587890625 },
+        { x: '7', y: 1878.9078369140625 },
       ],
     },
-  ]
+  ];
+
+  // console.log(predictionData);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
@@ -131,8 +141,8 @@ function PredictionPage() {
                 key={coin.id}
                 onClick={() => handleCoinSelect(coin.id)}
                 className={`w-full p-3 rounded-lg text-left transition-all duration-200 ${selectedCoin === coin.id
-                    ? "bg-emerald-500/20 border-2 border-emerald-400/50"
-                    : "bg-slate-700/50 border border-slate-600/50 hover:bg-slate-700/70 hover:border-slate-500/70"
+                  ? "bg-emerald-500/20 border-2 border-emerald-400/50"
+                  : "bg-slate-700/50 border border-slate-600/50 hover:bg-slate-700/70 hover:border-slate-500/70"
                   }`}
               >
                 <div className="flex items-center justify-between">
@@ -193,7 +203,7 @@ function PredictionPage() {
                 )}
               </div>
               <div className="h-full">
-                <Graph data={data} />
+                <Graph data={data} index={DUMMY_HISTORICAL_DATA[selectedCoin]?.length - 1 || 6} />
               </div>
             </div>
 

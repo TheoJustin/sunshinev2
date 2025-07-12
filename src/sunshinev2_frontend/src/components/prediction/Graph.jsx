@@ -1,6 +1,6 @@
 import { ResponsiveLine } from '@nivo/line'
 
-export function Graph({ data }) {
+export function Graph({ data, index }) {
 
     const theme = {
         "background": "#000000",
@@ -169,7 +169,7 @@ export function Graph({ data }) {
                 markers={[
                     {
                         axis: 'x',
-                        value: data[0].data[5].x,
+                        value: data[0].data[index].x,
                         lineStyle: { stroke: '#ffffff', strokeWidth: 1 },
                         legend: 'Prediction starts here',
                         textStyle: {
