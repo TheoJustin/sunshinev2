@@ -3,7 +3,7 @@ import { ResponsiveLine } from '@nivo/line'
 export function Graph({ data, index }) {
 
     const theme = {
-        "background": "#000000",
+        "background": "transparent",
         "text": {
             "fontSize": 11,
             "fill": "#ffffff",
@@ -123,34 +123,34 @@ export function Graph({ data, index }) {
         <div className='w-full h-[30rem]'>
             <ResponsiveLine
                 data={data}
-                margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                margin={{ top: 20, right: 20, bottom: 50, left: 80 }}
                 yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
                 curve="monotoneX"
                 axisBottom={{ legend: 'Day', legendOffset: 36 }}
-                axisLeft={{ legend: 'Price', legendOffset: -40 }}
-                colors={{ scheme: 'paired' }}
+                axisLeft={{ legend: 'Price', legendOffset: -60 }}
+                colors={['#FE7743', '#ea580c', '#dc2626', '#b91c1c']}
                 enablePoints={false}
                 pointSize={10}
                 useMesh={true}
                 theme={theme}
-                legends={[
-                    {
-                        anchor: 'right',
-                        direction: 'column',
-                        translateX: 100,
-                        itemsSpacing: 5,
-                        itemWidth: 80,
-                        itemHeight: 22,
-                        symbolSize: 13,
-                        symbolShape: 'circle'
-                    }
-                ]}
+                // legends={[
+                //     {
+                //         anchor: 'right',
+                //         direction: 'column',
+                //         translateX: 70,
+                //         itemsSpacing: 5,
+                //         itemWidth: 50,
+                //         itemHeight: 20,
+                //         symbolSize: 12,
+                //         symbolShape: 'circle'
+                //     }
+                // ]}
                 enableSlices="x"
                 sliceTooltip={({ slice }) => {
                     return (
                         <div className='p-2 rounded-sm border-y-sky-50'
                             style={{
-                                background: '#383838'
+                                background: '#252525'
                             }}
                         >
                             {slice.points.map(point => (
@@ -170,10 +170,10 @@ export function Graph({ data, index }) {
                     {
                         axis: 'x',
                         value: data[0].data[index].x,
-                        lineStyle: { stroke: '#ffffff', strokeWidth: 1 },
+                        lineStyle: { stroke: '#E3E3E3', strokeWidth: 1 },
                         legend: 'Prediction starts here',
                         textStyle: {
-                            fill: '#ffffff',
+                            fill: '#E3E3E3',
                             fontSize: 12
                         }
                     },

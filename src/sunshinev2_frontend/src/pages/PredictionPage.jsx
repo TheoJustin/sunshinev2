@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import { Graph } from "../components/prediction/Graph"
 import { sunshinev2_prediction } from "../../../declarations/sunshinev2_prediction"
 import { Badge } from "../components/ui/badge"
+import { LoadingSpinner } from "../components/ui/loading-spinner"
 import { TrendingUp, Activity, Search } from "lucide-react"
 import { DUMMY_COIN_LIST, DUMMY_HISTORICAL_DATA } from "../constants/graph"
 
@@ -118,7 +119,7 @@ function PredictionPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="flex">
-        <div className="w-80 min-h-screen bg-slate-800/90 backdrop-blur-sm border-r border-slate-700/50 p-6">
+          <div className="w-64 h-[calc(100vh-7.5rem)] sticky top-[5.75rem] bg-slate-800/90 backdrop-blur-sm border-r border-slate-700/50 p-6 overflow-hidden rounded-xl m-7 flex flex-col">
           <div className="mb-6">
             <h2 className="text-xl font-bold text-white mb-2">Select Cryptocurrency</h2>
             <p className="text-sm text-slate-400">Choose a coin to view predictions</p>
@@ -135,38 +136,36 @@ function PredictionPage() {
             />
           </div>
 
-          <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
-            {filteredCoins.map((coin) => (
-              <button
-                key={coin.id}
-                onClick={() => handleCoinSelect(coin.id)}
-                className={`w-full p-3 rounded-lg text-left transition-all duration-200 ${selectedCoin === coin.id
-                  ? "bg-emerald-500/20 border-2 border-emerald-400/50"
-                  : "bg-slate-700/50 border border-slate-600/50 hover:bg-slate-700/70 hover:border-slate-500/70"
-                  }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg"
-                      style={{ backgroundColor: coin.color }}
-                    >
-                      {coin.symbol.charAt(0)}
+          <div className="relative flex-1 min-h-0">
+              <div className="space-y-3 h-full overflow-y-auto custom-scrollbar pr-2">
+              {filteredCoins.map((coin) => (
+                <button
+                  key={coin.id}
+                  onClick={() => handleCoinSelect(coin.id)}
+                  className={`w-full p-3 rounded-lg text-left transition-all duration-200 ${selectedCoin === coin.id
+                    ? "bg-emerald-500/20 border border-emerald-400/50"
+                    : "bg-slate-700/50 border border-slate-600/50 hover:bg-slate-700/70 hover:border-slate-500/70"
+                    }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg"
+                        style={{ backgroundColor: coin.color }}
+                      >
+                        {coin.symbol.charAt(0)}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-white">{coin.name}</div>
+                        <div className="text-sm text-slate-400">{coin.symbol}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-semibold text-white">{coin.name}</div>
-                      <div className="text-sm text-slate-400">{coin.symbol}</div>
-                    </div>
+                    {selectedCoin === coin.id }
                   </div>
-                  {selectedCoin === coin.id && (
-                    <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-400/50">
-                      <Activity className="w-3 h-3 mr-1" />
-                      Active
-                    </Badge>
-                  )}
-                </div>
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
+            <div className="absolute -bottom-2 left-0 right-0 h-8 bg-gradient-to-t from-slate-800/90 to-transparent pointer-events-none rounded-b-lg"></div>
           </div>
         </div>
 
@@ -188,20 +187,22 @@ function PredictionPage() {
             </div>
 
             <div className="mb-8 bg-black/80 rounded-2xl shadow-2xl border border-slate-700/50 p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-                    <TrendingUp className="w-5 h-5 text-emerald-400" />
-                    <span>Market Data Visualization</span>
-                  </h3>
-                  <p className="text-slate-400 text-sm">
-                    {selectedCoinData?.name} price trends with AI prediction markers
-                  </p>
-                </div>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-slate-400 text-sm flex items-center gap-3">
+                  <TrendingUp className="w-5 h-5 text-emerald-400" />
+                  {selectedCoinData?.name} price trends with AI prediction markers
+                </p>
                 {isLoading && (
-                  <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-400/50">Loading...</Badge>
+                  <div className="flex items-center gap-2">
+                    <LoadingSpinner size="w-5 h-5" color="text-gray-400" />
+                    <span className="text-gray-400 text-sm">Loading...</span>
+                  </div>
                 )}
               </div>
+                  {/* <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+                    <TrendingUp className="w-5 h-5 text-emerald-400" />
+                    <span>Market Data Visualization</span>
+                  </h3> */}
               <div className="h-full">
                 <Graph data={data} index={DUMMY_HISTORICAL_DATA[selectedCoin]?.length - 1 || 6} />
               </div>
