@@ -60,17 +60,18 @@ function Header() {
   }
 
   const handleConnectWallet = () => {
-    connectWallet();
+    connectWallet()
   }
 
   const handleDisconnectWallet = () => {
-    disconnectWallet();
+    disconnectWallet()
   }
 
   return (
     <motion.nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#0B1120]/95 ' : 'bg-transparent'
-        }`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-[#0B1120]/95 ' : 'bg-transparent'
+      }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -99,7 +100,7 @@ function Header() {
             </span>
           </motion.div>
           <div className="hidden md:flex items-center space-x-8">
-            {['Features', 'Analytics', 'Predictions', 'News'].map(item => (
+            {['Features', 'Analytics', 'Predictions', 'News', 'Portfolio'].map(item => (
               <motion.a
                 key={item}
                 href={`/${item === 'Features' ? `#${item.toLowerCase()}` : item.toLowerCase()}`}
