@@ -8,13 +8,17 @@
       "main": "src/sunshinev2_prediction/main.mo",
       "type": "motoko"
     },
+    "sunshinev2_comment": {
+      "main": "src/sunshinev2_comment/main.mo",
+      "type": "motoko"
+    },
     "sunshinev2_frontend": {
       "dependencies": [
-        "sunshinev2_backend", "internet_identity", "sunshinev2_prediction"
+        "sunshinev2_backend",
+        "internet_identity",
+        "sunshinev2_prediction"
       ],
-      "source": [
-        "src/sunshinev2_frontend/dist"
-      ],
+      "source": ["src/sunshinev2_frontend/dist"],
       "type": "assets",
       "workspace": "sunshinev2_frontend"
     },
@@ -32,7 +36,7 @@
   "defaults": {
     "build": {
       "args": "",
-      "packtool": ""
+      "packtool": "mops sources"
     }
   },
   "output_env_file": ".env",
