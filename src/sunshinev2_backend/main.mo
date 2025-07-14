@@ -29,4 +29,17 @@ actor {
   public query (message) func greet() : async Text {
     return "Hello, " # Principal.toText(message.caller) # "!";
   };
+
+
+  public query func getUserById(userId : Principal) : async Result.Result<User, Text> {
+    let user = users.get(userId);
+    switch (user) {
+        case (?user) {
+          return #ok(user);
+        };
+        case (null) {
+          return #err("User not found!");
+        };
+    };
+  };
 };
