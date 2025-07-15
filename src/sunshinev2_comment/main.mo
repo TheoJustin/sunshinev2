@@ -5,7 +5,7 @@ import Time "mo:base/Time";
 import Result "mo:base/Result";
 import Source "mo:uuid/async/SourceV4";
 import UUID "mo:uuid/UUID";
-import User "canister:sunshinev2_backend";
+import Backend "canister:sunshinev2_backend";
 
 actor {
     type Comment = {
@@ -25,7 +25,7 @@ actor {
 
     public shared func createComment(commentCoin : Text, commentMessage : Text, userCreator : Principal) : async Result.Result<(), Text> {
         let newId = await generateUUID();
-        let user = await User.getUserById(userCreator);
+        let user = await Backend.getUserById(userCreator);
         if (Principal.isAnonymous(userCreator)) {
             return #err("Unauthorized");
         };
@@ -43,6 +43,18 @@ actor {
             };
             case (#err(errorMsg)) {
                 return #err(errorMsg);
+            };
+        };
+    };
+
+    public shared query func getCommentByCoin(coinName : Text) : async Result.Result<Comment, Text> {
+        let comment = comments.get(coinName);
+        switch (comment) {
+            case (?comment) {
+                return #ok(comment);
+            };
+            case (null) {
+                return #err("Failed to get comment");
             };
         };
     };
