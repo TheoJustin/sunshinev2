@@ -5,7 +5,7 @@ import Time "mo:base/Time";
 import Result "mo:base/Result";
 import Source "mo:uuid/async/SourceV4";
 import UUID "mo:uuid/UUID";
-import Backend "canister:sunshinev2_backend";
+import sunshinev2_backend "canister:sunshinev2_backend";
 
 actor {
     type Comment = {
@@ -25,7 +25,7 @@ actor {
 
     public shared func createComment(commentCoin : Text, commentMessage : Text, userCreator : Principal) : async Result.Result<(), Text> {
         let newId = await generateUUID();
-        let user = await Backend.getUserById(userCreator);
+        let user = await sunshinev2_backend.getUserById(userCreator);
         if (Principal.isAnonymous(userCreator)) {
             return #err("Unauthorized");
         };
