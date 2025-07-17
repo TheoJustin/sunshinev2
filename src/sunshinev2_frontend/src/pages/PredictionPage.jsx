@@ -127,7 +127,7 @@ function PredictionPage() {
 
     console.log('Principal:', principal.toText())
 
-    await sunshinev2_comment.createComment(selectedCoin.id, inputValue, principal)
+    await sunshinev2_comment.createComment(selectedCoin, inputValue, principal)
   }
 
   return (
