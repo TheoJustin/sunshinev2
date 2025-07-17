@@ -3,9 +3,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { Graph } from '../components/prediction/Graph'
 import { sunshinev2_prediction } from '../../../declarations/sunshinev2_prediction'
-import { Badge } from '../components/ui/badge'
 import { LoadingSpinner } from '../components/ui/loading-spinner'
-import { TrendingUp, Activity, Search } from 'lucide-react'
+import { TrendingUp, Search, MessageCircle, User, Clock } from 'lucide-react'
 import { DUMMY_COIN_LIST, DUMMY_HISTORICAL_DATA } from '../constants/graph'
 import { sunshinev2_comment } from '../../../declarations/sunshinev2_comment'
 import { AuthClient } from '@dfinity/auth-client'
@@ -16,6 +15,9 @@ function PredictionPage() {
   const [selectedCoin, setSelectedCoin] = useState('ethereum')
   const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [comments, setComments] = useState([])
+  const [isLoadingComments, setIsLoadingComments] = useState(false)
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false)
   const cache = useRef(new Map())
 
   async function fetchPredictions(coin = 'ethereum') {
@@ -76,8 +78,30 @@ function PredictionPage() {
     }
   }
 
+  async function fetchComments(coin) {
+    if (!coin) return
+
+    setIsLoadingComments(true)
+    try {
+      const result = await sunshinev2_comment.getCommentByCoin(coin)
+      console.log('Comments response:', result)
+
+      if ('ok' in result && result.ok) {
+        setComments([result.ok]) // wrap single comment in an array
+      } else {
+        setComments([]) // no comment found
+      }
+    } catch (error) {
+      console.error('Error fetching comments for', coin, ':', error)
+      setComments([])
+    } finally {
+      setIsLoadingComments(false)
+    }
+  }
+
   useEffect(() => {
     fetchPredictions(selectedCoin)
+    fetchComments(selectedCoin)
   }, [selectedCoin])
 
   const handleCoinSelect = coinId => {
@@ -112,22 +136,50 @@ function PredictionPage() {
           },
         ]
 
-  // console.log(predictionData);
-
   const handleInputChange = e => {
     setInputValue(e.target.value)
   }
 
   const handleSubmit = async e => {
     e.preventDefault()
+    if (!inputValue.trim()) return
 
-    const authClient = await AuthClient.create()
-    const identity = authClient.getIdentity()
-    const principal = identity.getPrincipal()
+    setIsSubmittingComment(true)
+    try {
+      const authClient = await AuthClient.create()
+      const identity = authClient.getIdentity()
+      const principal = identity.getPrincipal()
+      console.log('Principal:', principal.toText())
 
-    console.log('Principal:', principal.toText())
+      await sunshinev2_comment.createComment(selectedCoin, inputValue, principal)
+      setInputValue('') // Clear the input after successful submission
 
-    await sunshinev2_comment.createComment(selectedCoin, inputValue, principal)
+      // Refresh comments after submitting
+      const err = await fetchComments(selectedCoin)
+      console.log(err)
+    } catch (error) {
+      console.error('Error submitting comment:', error)
+    } finally {
+      setIsSubmittingComment(false)
+    }
+  }
+
+  const formatTimestamp = timestamp => {
+    // Adjust this based on your timestamp format
+    try {
+      const date = new Date(Number(timestamp) / 1000000) // Convert nanoseconds to milliseconds if needed
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString()
+    } catch {
+      return 'Recently'
+    }
+  }
+
+  const formatPrincipal = principal => {
+    if (!principal) return 'Anonymous'
+    const principalStr = principal.toString()
+    return principalStr.length > 10
+      ? `${principalStr.slice(0, 8)}...${principalStr.slice(-4)}`
+      : principalStr
   }
 
   return (
@@ -221,10 +273,6 @@ function PredictionPage() {
                   </div>
                 )}
               </div>
-              {/* <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-                    <TrendingUp className="w-5 h-5 text-emerald-400" />
-                    <span>Market Data Visualization</span>
-                  </h3> */}
               <div className="h-full">
                 <Graph
                   data={data}
@@ -233,61 +281,134 @@ function PredictionPage() {
               </div>
             </div>
 
-            <div className="bg-slate-800/90 rounded-2xl shadow-2xl border border-slate-700/50 p-8">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-white mb-2">Market Prediction Analysis</h2>
-                <p className="text-slate-300">
-                  Share your analysis and predictions for {selectedCoinData?.id} trends shown above
-                </p>
-              </div>
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-6"
-              >
-                <div className="space-y-3">
-                  <label
-                    htmlFor="prediction-input"
-                    className="block text-sm font-semibold text-slate-200"
-                  >
-                    Enter your prediction or analysis
-                  </label>
-                  <div className="relative">
-                    <textarea
-                      id="prediction-input"
-                      value={inputValue}
-                      onChange={handleInputChange}
-                      placeholder={`Analyze the ${selectedCoinData?.id} chart above and share your predictions for ${selectedCoinData?.symbol} trends...`}
-                      rows={6}
-                      className="w-full px-6 py-4 text-lg bg-slate-900/60 border border-slate-600/50 rounded-xl
-                               text-white placeholder-slate-400
-                               focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-400/50
-                               hover:border-slate-500/70 hover:bg-slate-900/80
-                               transition-all duration-300 ease-in-out
-                               shadow-lg shadow-black/20 resize-none
-                               leading-relaxed"
-                    />
-                    <div className="absolute bottom-3 right-4 text-xs text-slate-500">
-                      {inputValue.length} characters
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Comment Form */}
+              <div className="bg-slate-800/90 rounded-2xl shadow-2xl border border-slate-700/50 p-8">
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-white mb-2">Market Prediction Analysis</h2>
+                  <p className="text-slate-300">
+                    Share your analysis and predictions for {selectedCoinData?.id} trends shown
+                    above
+                  </p>
+                </div>
+
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                >
+                  <div className="space-y-3">
+                    <label
+                      htmlFor="prediction-input"
+                      className="block text-sm font-semibold text-slate-200"
+                    >
+                      Enter your prediction or analysis
+                    </label>
+                    <div className="relative">
+                      <textarea
+                        id="prediction-input"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        placeholder={`Analyze the ${selectedCoinData?.id} chart above and share your predictions for ${selectedCoinData?.symbol} trends...`}
+                        rows={6}
+                        className="w-full px-6 py-4 text-lg bg-slate-900/60 border border-slate-600/50 rounded-xl
+                                   text-white placeholder-slate-400
+                                   focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-400/50
+                                   hover:border-slate-500/70 hover:bg-slate-900/80
+                                   transition-all duration-300 ease-in-out
+                                   shadow-lg shadow-black/20 resize-none
+                                   leading-relaxed"
+                      />
+                      <div className="absolute bottom-3 right-4 text-xs text-slate-500">
+                        {inputValue.length} characters
+                      </div>
                     </div>
                   </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={!inputValue.trim() || isSubmittingComment}
+                      className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-emerald-500
+                                 text-white font-semibold rounded-xl
+                                 hover:from-emerald-500 hover:to-emerald-400
+                                 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:ring-offset-2 focus:ring-offset-slate-800
+                                 disabled:from-slate-600 disabled:to-slate-600 disabled:cursor-not-allowed disabled:opacity-50
+                                 transition-all duration-300 ease-in-out
+                                 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30
+                                 transform hover:scale-105 active:scale-95
+                                 flex items-center gap-2"
+                    >
+                      {isSubmittingComment && (
+                        <LoadingSpinner
+                          size="w-4 h-4"
+                          color="text-white"
+                        />
+                      )}
+                      {isSubmittingComment ? 'Submitting...' : 'Submit Prediction'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Comments Section */}
+              <div className="bg-slate-800/90 rounded-2xl shadow-2xl border border-slate-700/50 p-8">
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                    <MessageCircle className="w-6 h-6 text-blue-400" />
+                    Community Predictions
+                  </h2>
+                  <p className="text-slate-300">
+                    See what others are saying about {selectedCoinData?.symbol || 'this coin'}
+                  </p>
                 </div>
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    disabled={!inputValue.trim()}
-                    className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-emerald-500
-                             text-white font-semibold rounded-xl
-                             hover:from-emerald-500 hover:to-emerald-400
-                             focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:ring-offset-2 focus:ring-offset-slate-800
-                             disabled:from-slate-600 disabled:to-slate-600 disabled:cursor-not-allowed disabled:opacity-50
-                             transition-all duration-300 ease-in-out
-                             shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30
-                             transform hover:scale-105 active:scale-95"
-                  >
-                    Submit Prediction
-                  </button>
+
+                <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                  {isLoadingComments ? (
+                    <div className="flex items-center justify-center py-8">
+                      <LoadingSpinner
+                        size="w-6 h-6"
+                        color="text-gray-400"
+                      />
+                      <span className="ml-2 text-gray-400">Loading comments...</span>
+                    </div>
+                  ) : comments.length > 0 ? (
+                    comments.map((comment, index) => (
+                      <div
+                        key={index}
+                        className="bg-slate-900/60 rounded-lg p-4 border border-slate-600/50 hover:border-slate-500/70 transition-all duration-200"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                              <User className="w-4 h-4 text-white" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-semibold text-white">
+                                {formatPrincipal(comment.author || comment.principal)}
+                              </div>
+                              <div className="text-xs text-slate-400 flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {formatTimestamp(comment.timestamp || comment.created_at)}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-slate-200 leading-relaxed">
+                          {comment.content || comment.text || comment.comment}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <MessageCircle className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                      <p className="text-slate-400 mb-2">No predictions yet</p>
+                      <p className="text-sm text-slate-500">
+                        Be the first to share your analysis for {selectedCoinData?.symbol}!
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
