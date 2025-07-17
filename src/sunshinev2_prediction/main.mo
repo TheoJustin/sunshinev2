@@ -2,6 +2,7 @@ import Blob "mo:base/Blob";
 import Cycles "mo:base/ExperimentalCycles";
 import Text "mo:base/Text";
 import IC "ic:aaaaa-aa";
+import ENV "env";
 
 actor {
   public query func testing() : async Text {
@@ -18,7 +19,7 @@ actor {
   };
 
   public func getPredictions(coin : ?Text) : async Text {
-    let host : Text = "testing-be-chi.vercel.app";
+    let host : Text = ENV.API_URL;
 
     let coinParam : Text = switch (coin) {
       case (?c) "?coin=" # c;

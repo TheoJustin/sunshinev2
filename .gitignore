@@ -25,3 +25,4 @@ dist/
 .env
 
 .mops
+src/sunshinev2_prediction/env.mo

@@ -11,7 +11,9 @@
     "sunshinev2_comment": {
       "main": "src/sunshinev2_comment/main.mo",
       "type": "motoko",
-      "dependencies": ["sunshinev2_backend"]
+      "dependencies": [
+        "sunshinev2_backend"
+      ]
     },
     "sunshinev2_frontend": {
       "dependencies": [
@@ -20,7 +22,9 @@
         "sunshinev2_prediction",
         "sunshinev2_comment"
       ],
-      "source": ["src/sunshinev2_frontend/dist"],
+      "source": [
+        "src/sunshinev2_frontend/dist"
+      ],
       "type": "assets",
       "workspace": "sunshinev2_frontend"
     },
