@@ -119,6 +119,15 @@ export function Graph({ data, index }) {
         }
     }
 
+    const prePredictionData = [{
+        id: 'Pre-Prediction',
+        data: data[0].data.slice(0, index)
+    }];
+    const predictionData = [{
+        id: 'Prediction',
+        data: data[0].data.slice(index)
+    }];
+
     return (
         <div className='w-full h-[30rem]'>
             <ResponsiveLine
@@ -133,6 +142,8 @@ export function Graph({ data, index }) {
                 pointSize={10}
                 useMesh={true}
                 theme={theme}
+                enableArea={true}
+                areaOpacity={0.2}
                 // legends={[
                 //     {
                 //         anchor: 'right',
