@@ -172,6 +172,7 @@ export function Graph({ data, index }) {
                         value: data[0].data[index].x,
                         lineStyle: { stroke: '#E3E3E3', strokeWidth: 1 },
                         legend: 'Prediction starts here',
+                        legendPosition: 'top',
                         textStyle: {
                             fill: '#E3E3E3',
                             fontSize: 12
