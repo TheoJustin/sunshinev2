@@ -86,10 +86,10 @@ function PredictionPage() {
       const result = await sunshinev2_comment.getCommentByCoin(coin)
       console.log('Comments response:', result)
 
-      if ('ok' in result && result.ok) {
-        setComments([result.ok]) // wrap single comment in an array
+      if ('ok' in result && result.ok && Array.isArray(result.ok.comments)) {
+        setComments(result.ok.comments) // now expecting an array
       } else {
-        setComments([]) // no comment found
+        setComments([])
       }
     } catch (error) {
       console.error('Error fetching comments for', coin, ':', error)
@@ -140,6 +140,25 @@ function PredictionPage() {
     setInputValue(e.target.value)
   }
 
+  const [allComments, setAllComments] = useState([])
+  const [isLoadingAllComments, setIsLoadingAllComments] = useState(false)
+  async function fetchAllComments() {
+    setIsLoadingAllComments(true)
+    try {
+      const commentsByCoin = await sunshinev2_comment.getAllComments()
+      console.log('All comments:', commentsByCoin)
+      setAllComments(commentsByCoin)
+    } catch (err) {
+      console.error('Error fetching all comments:', err)
+      setAllComments([])
+    } finally {
+      setIsLoadingAllComments(false)
+    }
+  }
+  useEffect(() => {
+    fetchAllComments()
+  }, [])
+
   const handleSubmit = async e => {
     e.preventDefault()
     if (!inputValue.trim()) return
@@ -151,7 +170,7 @@ function PredictionPage() {
       const principal = identity.getPrincipal()
       console.log('Principal:', principal.toText())
 
-      await sunshinev2_comment.createComment(selectedCoin, inputValue, principal)
+      await sunshinev2_comment.createComment(selectedCoin, inputValue)
       setInputValue('') // Clear the input after successful submission
 
       // Refresh comments after submitting
@@ -384,18 +403,16 @@ function PredictionPage() {
                             </div>
                             <div>
                               <div className="text-sm font-semibold text-white">
-                                {formatPrincipal(comment.author || comment.principal)}
+                                {formatPrincipal(comment.user)}
                               </div>
                               <div className="text-xs text-slate-400 flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
-                                {formatTimestamp(comment.timestamp || comment.created_at)}
+                                {formatTimestamp(comment.timestamp)}
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className="text-slate-200 leading-relaxed">
-                          {comment.content || comment.text || comment.comment}
-                        </div>
+                        <div className="text-slate-200 leading-relaxed">{comment.message}</div>
                       </div>
                     ))
                   ) : (

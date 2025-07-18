@@ -1,61 +1,74 @@
-import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import TrieMap "mo:base/TrieMap";
 import Time "mo:base/Time";
 import Result "mo:base/Result";
 import Source "mo:uuid/async/SourceV4";
+import Array "mo:base/Array";
 import UUID "mo:uuid/UUID";
-import sunshinev2_backend "canister:sunshinev2_backend";
 
 actor {
-    type Comment = {
-        id : Text;
-        user : Principal;
-        coin : Text;
-        message : Text;
-        timestamp : Time.Time;
+  type Comment = {
+    id        : Text;
+    message   : Text;
+    timestamp : Time.Time;
+  };
+
+  type CoinComment = {
+    coin     : Text;
+    comments : [Comment];
+  };
+
+  let comments = TrieMap.TrieMap<Text, CoinComment>(Text.equal, Text.hash);
+
+  public shared func generateUUID() : async Text {
+    let g = Source.Source();
+    return UUID.toText(await g.new());
+  };
+
+  public shared func createComment(commentCoin : Text, commentMessage : Text) : async Result.Result<(), Text> {
+    let newId = await generateUUID();
+    let newComment : Comment = {
+        id        = newId;
+        message   = commentMessage;
+        timestamp = Time.now();
     };
 
-    let comments = TrieMap.TrieMap<Text, Comment>(Text.equal, Text.hash);
-
-    public shared func generateUUID() : async Text {
-        let g = Source.Source();
-        return UUID.toText(await g.new());
-    };
-
-    public shared func createComment(commentCoin : Text, commentMessage : Text, userCreator : Principal) : async Result.Result<(), Text> {
-        let newId = await generateUUID();
-        let user = await sunshinev2_backend.getUserById(userCreator);
-        if (Principal.isAnonymous(userCreator)) {
-            return #err("Unauthorized");
+    switch (comments.get(commentCoin)) {
+        case (?coinComment) {
+        let updated : CoinComment = {
+            coin     = coinComment.coin;
+            comments = Array.append<Comment>(coinComment.comments, [newComment]);
         };
-        switch (user) {
-            case (#ok(user)) {
-                let newComment : Comment = {
-                    id = newId;
-                    user = userCreator;
-                    coin = commentCoin;
-                    message = commentMessage;
-                    timestamp = Time.now();
-                };
-                comments.put(newId, newComment);
-                return #ok();
-            };
-            case (#err(errorMsg)) {
-                return #err(errorMsg);
-            };
+        comments.put(commentCoin, updated);
         };
-    };
-
-    public shared query func getCommentByCoin(coinName : Text) : async Result.Result<Comment, Text> {
-        let comment = comments.get(coinName);
-        switch (comment) {
-            case (?comment) {
-                return #ok(comment);
-            };
-            case (null) {
-                return #err("Failed to get comment");
-            };
+        case null {
+        let newEntry : CoinComment = {
+            coin     = commentCoin;
+            comments = [newComment];
+        };
+        comments.put(commentCoin, newEntry);
         };
     };
+
+    return #ok();
+  };
+
+  public shared query func getCommentByCoin(coinName : Text) : async Result.Result<CoinComment, Text> {
+    switch (comments.get(coinName)) {
+      case (?coinComment) {
+        return #ok(coinComment);
+      };
+      case null {
+        return #err("No comments found for this coin.");
+      };
+    };
+  };
+
+  public shared query func getAllComments() : async [CoinComment] {
+    var result : [CoinComment] = [];
+    for (cc in comments.vals()) {
+        result := Array.append<CoinComment>(result, [cc]);
+    };
+    result
+  }
 };
