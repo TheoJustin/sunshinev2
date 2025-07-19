@@ -6,7 +6,7 @@ import { sunshinev2_prediction } from '../../../declarations/sunshinev2_predicti
 import { LoadingSpinner } from '../components/ui/loading-spinner'
 import { TrendingUp, Search, MessageCircle, User, Clock } from 'lucide-react'
 import { DUMMY_COIN_LIST, DUMMY_HISTORICAL_DATA } from '../constants/graph'
-import { sunshinev2_comment } from '../../../declarations/sunshinev2_comment'
+// import { sunshinev2_comment } from '../../../declarations/sunshinev2_comment'
 import { AuthClient } from '@dfinity/auth-client'
 
 function PredictionPage() {
@@ -295,7 +295,7 @@ function PredictionPage() {
               <div className="h-full">
                 <Graph
                   data={data}
-                  index={DUMMY_HISTORICAL_DATA[selectedCoin]?.length - 1 || 6}
+                  index={DUMMY_HISTORICAL_DATA[selectedCoin]?.length - 1 || 7}
                 />
               </div>
             </div>

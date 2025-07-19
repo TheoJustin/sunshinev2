@@ -119,31 +119,66 @@ export function Graph({ data, index }) {
         }
     }
 
-    const prePredictionData = [{
+    const styleById = {
+        Prediction: {
+            strokeDasharray: '6, 6',
+            strokeWidth: 2,
+        },
+        default: {
+            strokeWidth: 2,
+        },
+    }
+
+    const DashedLine = ({
+        series,
+        lineGenerator,
+        xScale,
+        yScale,
+    }) => {
+        return series.map(({ id, data, color }) => (
+            <path
+                key={id}
+                d={
+                    lineGenerator(
+                        data.map(d => ({
+                            x: xScale(d.data.x),
+                            y: yScale(d.data.y),
+                        }))
+                    )
+                }
+                fill="none"
+                stroke={color}
+                style={styleById[id] || styleById.default}
+            />
+        ))
+    }
+
+    const prePredictionData = {
         id: 'Pre-Prediction',
         data: data[0].data.slice(0, index)
-    }];
-    const predictionData = [{
+    };
+    const predictionData = {
         id: 'Prediction',
-        data: data[0].data.slice(index)
-    }];
-
+        data: data[0].data.slice(index-1)
+    };
+    
     return (
         <div className='w-full h-[30rem]'>
             <ResponsiveLine
-                data={data}
+                data={[prePredictionData, predictionData]}
                 margin={{ top: 20, right: 20, bottom: 50, left: 80 }}
-                yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
+                yScale={{ type: 'linear', min: Math.floor(Math.min(...data[0].data.map(d => d.y))), max: 'auto', stacked: false, reverse: false }}
                 curve="monotoneX"
                 axisBottom={{ legend: 'Day', legendOffset: 36 }}
                 axisLeft={{ legend: 'Price', legendOffset: -60 }}
-                colors={['#FE7743', '#ea580c', '#dc2626', '#b91c1c']}
+                colors={['#ea580c', '#EC7B40', '#dc2626', '#b91c1c']}
                 enablePoints={false}
                 pointSize={10}
                 useMesh={true}
                 theme={theme}
                 enableArea={true}
                 areaOpacity={0.2}
+                areaBaselineValue={Math.floor(Math.min(...data[0].data.map(d => d.y)))}
                 // legends={[
                 //     {
                 //         anchor: 'right',
@@ -180,7 +215,7 @@ export function Graph({ data, index }) {
                 markers={[
                     {
                         axis: 'x',
-                        value: data[0].data[index].x,
+                        value: data[0].data[index-1].x,
                         lineStyle: { stroke: '#E3E3E3', strokeWidth: 1 },
                         legend: 'Prediction starts here',
                         legendPosition: 'top',
@@ -190,6 +225,7 @@ export function Graph({ data, index }) {
                         }
                     },
                 ]}
+                layers={['grid', 'markers', 'axes', 'areas', 'crosshair', DashedLine, 'slices', 'points', 'mesh', 'legends']}
             />
         </div>
     )
