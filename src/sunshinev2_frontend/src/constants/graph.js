@@ -5,21 +5,24 @@ export const DUMMY_COIN_LIST = [
     { id: "cardano", name: "Cardano", symbol: "ADA", color: "#0033AD" },
     { id: "solana", name: "Solana", symbol: "SOL", color: "#9945FF" },
     { id: "polkadot", name: "Polkadot", symbol: "DOT", color: "#E6007A" },
-    { id: "dogecoin", name: "Dogecoin", symbol: "DOGE", color: "#C2A633" },
-    { id: "avalanche-2", name: "Avalanche", symbol: "AVAX", color: "#E84142" },
+    { id: "doge", name: "Dogecoin", symbol: "DOGE", color: "#C2A633" },
+    { id: "avalanche", name: "Avalanche", symbol: "AVAX", color: "#E84142" },
     { id: "chainlink", name: "Chainlink", symbol: "LINK", color: "#375BD2" },
-    { id: "polygon", name: "Polygon", symbol: "MATIC", color: "#8247E5" },
+    { id: "matic-network", name: "Polygon", symbol: "MATIC", color: "#8247E5" },
     { id: "litecoin", name: "Litecoin", symbol: "LTC", color: "#BFBBBB" },
     { id: "uniswap", name: "Uniswap", symbol: "UNI", color: "#FF007A" },
+    { id: "hyperliquid", name: "Hyperliquid", symbol: "HYPE", color: "#98fce4" },
+    { id: "ripple", name: "Ripple", symbol: "XRP", color: "#282c2c" },
+    { id: "bittensor", name: "Bittensor", symbol: "TAO", color: "#2c2c2c" },
 ]
 
 export const DUMMY_HISTORICAL_DATA = {
     bitcoin: [
-        { x: "-6", y: 80000 },
-        { x: "-5", y: 82500 },
-        { x: "-4", y: 85000 },
-        { x: "-3", y: 83000 },
-        { x: "-2", y: 90000 },
+        { x: "-6", y: 90000 },
+        { x: "-5", y: 91500 },
+        { x: "-4", y: 92000 },
+        { x: "-3", y: 91000 },
+        { x: "-2", y: 93000 },
         { x: "-1", y: 95000 },
         { x: "0", y: 98000 },
     ],
@@ -68,7 +71,7 @@ export const DUMMY_HISTORICAL_DATA = {
         { x: "-1", y: 22.5 },
         { x: "0", y: 23 },
     ],
-    dogecoin: [
+    doge: [
         { x: "-6", y: 0.1 },
         { x: "-5", y: 0.11 },
         { x: "-4", y: 0.105 },
@@ -77,7 +80,7 @@ export const DUMMY_HISTORICAL_DATA = {
         { x: "-1", y: 0.118 },
         { x: "0", y: 0.12 },
     ],
-    "avalanche-2": [
+    avalanche: [
         { x: "-6", y: 50 },
         { x: "-5", y: 52 },
         { x: "-4", y: 51 },
@@ -95,7 +98,7 @@ export const DUMMY_HISTORICAL_DATA = {
         { x: "-1", y: 16.8 },
         { x: "0", y: 17 },
     ],
-    polygon: [
+    "matic-network": [
         { x: "-6", y: 1.0 },
         { x: "-5", y: 1.05 },
         { x: "-4", y: 1.02 },
@@ -114,6 +117,33 @@ export const DUMMY_HISTORICAL_DATA = {
         { x: "0", y: 86 },
     ],
     uniswap: [
+        { x: "-6", y: 10 },
+        { x: "-5", y: 10.5 },
+        { x: "-4", y: 10.2 },
+        { x: "-3", y: 10.8 },
+        { x: "-2", y: 10.6 },
+        { x: "-1", y: 10.9 },
+        { x: "0", y: 11 },
+    ],
+    hyperliquid: [
+        { x: "-6", y: 10 },
+        { x: "-5", y: 10.5 },
+        { x: "-4", y: 10.2 },
+        { x: "-3", y: 10.8 },
+        { x: "-2", y: 10.6 },
+        { x: "-1", y: 10.9 },
+        { x: "0", y: 11 },
+    ],
+    ripple: [
+        { x: "-6", y: 10 },
+        { x: "-5", y: 10.5 },
+        { x: "-4", y: 10.2 },
+        { x: "-3", y: 10.8 },
+        { x: "-2", y: 10.6 },
+        { x: "-1", y: 10.9 },
+        { x: "0", y: 11 },
+    ],
+    bittensor: [
         { x: "-6", y: 10 },
         { x: "-5", y: 10.5 },
         { x: "-4", y: 10.2 },

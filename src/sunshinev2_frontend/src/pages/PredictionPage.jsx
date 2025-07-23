@@ -12,7 +12,7 @@ import { AuthClient } from '@dfinity/auth-client'
 function PredictionPage() {
   const [inputValue, setInputValue] = useState('')
   const [predictionData, setPredictionData] = useState([])
-  const [selectedCoin, setSelectedCoin] = useState('ethereum')
+  const [selectedCoin, setSelectedCoin] = useState('bitcoin')
   const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [comments, setComments] = useState([])
@@ -20,7 +20,7 @@ function PredictionPage() {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false)
   const cache = useRef(new Map())
 
-  async function fetchPredictions(coin = 'ethereum') {
+  async function fetchPredictions(coin = 'bitcoin') {
     if (!coin || typeof coin !== 'string') {
       console.error('Invalid coin parameter:', coin)
       setPredictionData([])
@@ -121,17 +121,17 @@ function PredictionPage() {
       ? predictionData
       : [
           {
-            id: selectedCoinData?.symbol || 'ETH',
-            color: selectedCoinData?.color || '#627EEA',
+            id: selectedCoinData?.symbol || 'BTC',
+            color: selectedCoinData?.color || '#F7931A',
             data: [
-              ...(DUMMY_HISTORICAL_DATA[selectedCoin] || DUMMY_HISTORICAL_DATA.ethereum),
-              { x: '1', y: 1995.7147216796875 },
-              { x: '2', y: 1964.3731689453125 },
-              { x: '3', y: 1938.6651611328125 },
-              { x: '4', y: 1924.395751953125 },
-              { x: '5', y: 1917.40234375 },
-              { x: '6', y: 1898.587890625 },
-              { x: '7', y: 1878.9078369140625 },
+              ...(DUMMY_HISTORICAL_DATA[selectedCoin] || DUMMY_HISTORICAL_DATA.bitcoin),
+              { x: '1', y: 101559.2265625 },
+              { x: '2', y: 101112.3671875 },
+              { x: '3', y: 100770.578125 },
+              { x: '4', y: 100656.375 },
+              { x: '5', y: 100745.203125 },
+              { x: '6', y: 100526.109375 },
+              { x: '7', y: 100315.0390625 },
             ],
           },
         ]
