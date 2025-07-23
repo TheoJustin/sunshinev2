@@ -155,11 +155,11 @@ export function Graph({ data, index }) {
 
     const prePredictionData = {
         id: 'Pre-Prediction',
-        data: data[0].data.slice(0, index)
+        data: data[0].data.slice(0, index+1)
     };
     const predictionData = {
         id: 'Prediction',
-        data: data[0].data.slice(index-1)
+        data: data[0].data.slice(index)
     };
     
     return (
@@ -215,7 +215,7 @@ export function Graph({ data, index }) {
                 markers={[
                     {
                         axis: 'x',
-                        value: data[0].data[index-1].x,
+                        value: data[0].data[index].x,
                         lineStyle: { stroke: '#E3E3E3', strokeWidth: 1 },
                         legend: 'Prediction starts here',
                         legendPosition: 'top',
