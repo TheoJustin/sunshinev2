@@ -235,12 +235,13 @@ function PredictionPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div
+                      {/* <div
                         className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg"
                         style={{ backgroundColor: coin.color }}
                       >
                         {coin.symbol.charAt(0)}
-                      </div>
+                      </div> */}
+                      <img src={coin.link} className='w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg'></img>
                       <div>
                         <div className="font-semibold text-white">{coin.name}</div>
                         <div className="text-sm text-slate-400">{coin.symbol}</div>
@@ -259,12 +260,7 @@ function PredictionPage() {
           <div className="max-w-6xl mx-auto">
             <div className="mb-6">
               <div className="flex items-center space-x-3 mb-2">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-lg"
-                  style={{ backgroundColor: selectedCoinData?.color || '#F7931A' }}
-                >
-                  {selectedCoinData?.symbol.charAt(0) || 'B'}
-                </div>
+                <img src={selectedCoinData.link} className='w-12 h-12 m-0 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg'></img>
                 <div>
                   <h1 className="text-2xl font-bold text-white">
                     {selectedCoinData?.name || 'Bitcoin'} Predictions
