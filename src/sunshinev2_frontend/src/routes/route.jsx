@@ -3,6 +3,7 @@ import LandingPage from '../pages/LandingPage'
 import NewsPage from '../pages/NewsPage'
 import PredictionPage from '../pages/PredictionPage'
 import PortfolioPage from '../pages/PortfolioPage'
+import AnalyticsPage from '../pages/AnalyticsPage'
 
 export const ROUTES = [
   {
@@ -20,5 +21,9 @@ export const ROUTES = [
   {
     path: '/portfolio',
     element: <PortfolioPage />,
+  },
+  {
+    path: '/analytics',
+    element: <AnalyticsPage />,
   },
 ]
