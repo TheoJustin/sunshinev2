@@ -31,7 +31,7 @@ function LandingPage() {
 
       <Jumbotron scrollY={scrollY} />
       <Features />
-      <Demo />
+      {/* <Demo /> */}
     </div>
   )
 }
