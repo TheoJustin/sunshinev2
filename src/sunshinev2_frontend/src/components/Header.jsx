@@ -20,6 +20,7 @@ function Header() {
   const { login, logout, authenticated, identity, loginError } = useAuth({
     onLoginSuccess: principal => {
       console.log(`Logged in as ${principal}`)
+      nav('/register')
     },
     onLoginError: error => console.error(`Login failed: ${error}`),
   })

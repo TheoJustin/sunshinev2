@@ -5,6 +5,7 @@ import PredictionPage from '../pages/PredictionPage'
 import PortfolioPage from '../pages/PortfolioPage'
 import AnalyticsPage from '../pages/AnalyticsPage'
 import ChatPage from '../pages/ChatPage'
+import RegisterPage from '../pages/RegisterPage'
 
 export const ROUTES = [
   {
@@ -30,5 +31,9 @@ export const ROUTES = [
   {
     path: '/chat',
     element: <ChatPage />,
+  },
+  {
+    path: '/register',
+    element: <RegisterPage />,
   },
 ]

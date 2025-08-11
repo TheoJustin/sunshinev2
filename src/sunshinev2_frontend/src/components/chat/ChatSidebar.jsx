@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Card } from '../ui/card'
 import { Button } from '../ui/button'
-import { RiRefreshLine, RiGroupLine, RiUserLine, RiAddLine } from '@remixicon/react'
+import { RiRefreshLine, RiGroupLine, RiUserLine, RiAddLine, RiSearchLine } from '@remixicon/react'
 import CreateGroupModal from './CreateGroupModal'
 import AddFriendModal from './AddFriendModal'
+import BrowseGroupsModal from './BrowseGroupsModal'
 
 export default function ChatSidebar({ 
   groups, 
@@ -17,6 +18,7 @@ export default function ChatSidebar({
   const [activeTab, setActiveTab] = useState('groups')
   const [showCreateGroup, setShowCreateGroup] = useState(false)
   const [showAddFriend, setShowAddFriend] = useState(false)
+  const [showBrowseGroups, setShowBrowseGroups] = useState(false)
 
   return (
     <div className="w-80 bg-gray-900 border-r border-gray-700 flex flex-col">
@@ -71,13 +73,22 @@ export default function ChatSidebar({
           <>
             {activeTab === 'groups' && (
               <div className="p-2">
-                <Button
-                  onClick={() => setShowCreateGroup(true)}
-                  className="w-full mb-3 bg-blue-600 hover:bg-blue-700"
-                >
-                  <RiAddLine size={16} className="mr-2" />
-                  Create Group
-                </Button>
+                <div className="space-y-2 mb-3">
+                  <Button
+                    onClick={() => setShowCreateGroup(true)}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    <RiAddLine size={16} className="mr-2" />
+                    Create Group
+                  </Button>
+                  <Button
+                    onClick={() => setShowBrowseGroups(true)}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    <RiSearchLine size={16} className="mr-2" />
+                    Browse Groups
+                  </Button>
+                </div>
                 
                 {groups.length === 0 ? (
                   <p className="text-gray-400 text-center py-8">No groups found</p>
@@ -171,6 +182,13 @@ export default function ChatSidebar({
       {showAddFriend && (
         <AddFriendModal
           onClose={() => setShowAddFriend(false)}
+          onSuccess={onRefresh}
+        />
+      )}
+      
+      {showBrowseGroups && (
+        <BrowseGroupsModal
+          onClose={() => setShowBrowseGroups(false)}
           onSuccess={onRefresh}
         />
       )}

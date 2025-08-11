@@ -74,6 +74,78 @@ export default function ChatTest() {
     }
   }
 
+  const browseGroups = async () => {
+    if (!authenticated || !identity) {
+      setResult('Please login first')
+      return
+    }
+
+    try {
+      setLoading(true)
+      
+      const actor = sunshinev2_chat || createActor('ufxgi-4p777-77774-qaadq-cai', { agentOptions: { identity } })
+      
+      const principal = identity.getPrincipal()
+      
+      // Search for groups with a common term to find available groups
+      const result = await actor.getAllUnjoinedGroups('Group', principal)
+      console.log('Available groups:', result)
+      
+      if (result.ok && result.ok.length > 0) {
+        const groupsList = result.ok.map(group => `${group[0]} - ${group[1]}`).join('\n')
+        setResult(`Available groups:\n${groupsList}`)
+      } else {
+        setResult('No groups available to join')
+      }
+      
+    } catch (error) {
+      console.error('Browse groups error:', error)
+      setResult(`Error: ${error.message || error}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const joinFirstGroup = async () => {
+    if (!authenticated || !identity) {
+      setResult('Please login first')
+      return
+    }
+
+    try {
+      setLoading(true)
+      
+      const actor = sunshinev2_chat || createActor('ufxgi-4p777-77774-qaadq-cai', { agentOptions: { identity } })
+      
+      const principal = identity.getPrincipal()
+      
+      // Get available groups
+      const groupsResult = await actor.getAllUnjoinedGroups('Group', principal)
+      
+      if (groupsResult.ok && groupsResult.ok.length > 0) {
+        const firstGroup = groupsResult.ok[0]
+        const groupId = firstGroup[2] // group id
+        
+        // Join the first available group
+        const joinResult = await actor.addGroupMember(principal, groupId)
+        
+        if (joinResult.ok) {
+          setResult(`Successfully joined group: ${firstGroup[0]}`)
+        } else {
+          setResult(`Failed to join group: ${joinResult.err}`)
+        }
+      } else {
+        setResult('No groups available to join')
+      }
+      
+    } catch (error) {
+      console.error('Join group error:', error)
+      setResult(`Error: ${error.message || error}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const generateDummyGroups = async () => {
     if (!authenticated || !identity) {
       setResult('Please login first')
@@ -106,7 +178,7 @@ export default function ChatTest() {
 
   return (
     <Card className="p-6 bg-gray-800 border-gray-700 max-w-md mx-auto mt-8">
-      <h3 className="text-lg font-semibold text-white mb-4">Chat Connection Test</h3>
+      <h3 className="text-lg font-semibold text-white mb-4">Chat Connection Test [Live Demo Only]</h3>
       
       <div className="space-y-2">
         <Button
@@ -122,7 +194,23 @@ export default function ChatTest() {
           disabled={loading}
           className="w-full bg-green-600 hover:bg-green-700"
         >
-          {loading ? 'Registering...' : 'Register User'}
+          {loading ? 'Registering...' : 'Quick Register User'}
+        </Button>
+        
+        <Button
+          onClick={browseGroups}
+          disabled={loading}
+          className="w-full bg-yellow-600 hover:bg-yellow-700"
+        >
+          {loading ? 'Browsing...' : 'Browse Available Groups'}
+        </Button>
+        
+        <Button
+          onClick={joinFirstGroup}
+          disabled={loading}
+          className="w-full bg-orange-600 hover:bg-orange-700"
+        >
+          {loading ? 'Joining...' : 'Join First Available Group'}
         </Button>
         
         <Button
