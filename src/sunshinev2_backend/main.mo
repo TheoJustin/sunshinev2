@@ -4,7 +4,7 @@ import Text "mo:base/Text";
 import TrieMap "mo:base/TrieMap";
 import Result "mo:base/Result";
 
-actor {
+persistent actor {
   type Result<T, U> = Result.Result<T, U>;
   type Response<T> = Result<T, Text>;
 
@@ -16,7 +16,7 @@ actor {
     city : ?Text;
   };
 
-  let users = TrieMap.TrieMap<Principal, User>(Principal.equal, Principal.hash);
+  transient let users = TrieMap.TrieMap<Principal, User>(Principal.equal, Principal.hash);
 
   public query func getUser(p : Principal) : async ?User {
     let user = users.get(p);

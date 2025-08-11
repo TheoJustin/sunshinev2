@@ -4,7 +4,7 @@ import Text "mo:base/Text";
 import IC "ic:aaaaa-aa";
 import ENV "env";
 
-actor {
+persistent actor {
   public query func testing() : async Text {
     return "Test";
   };

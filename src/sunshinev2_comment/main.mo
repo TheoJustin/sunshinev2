@@ -6,7 +6,7 @@ import Source "mo:uuid/async/SourceV4";
 import Array "mo:base/Array";
 import UUID "mo:uuid/UUID";
 
-actor {
+persistent actor {
   type Comment = {
     id        : Text;
     message   : Text;
@@ -18,7 +18,7 @@ actor {
     comments : [Comment];
   };
 
-  let comments = TrieMap.TrieMap<Text, CoinComment>(Text.equal, Text.hash);
+  transient let comments = TrieMap.TrieMap<Text, CoinComment>(Text.equal, Text.hash);
 
   public shared func generateUUID() : async Text {
     let g = Source.Source();
