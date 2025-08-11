@@ -8,23 +8,25 @@
       "main": "src/sunshinev2_prediction/main.mo",
       "type": "motoko"
     },
+    "sunshinev2_chat": {
+      "main": "src/sunshinev2_chat/main.mo",
+      "type": "motoko",
+      "dependencies": ["sunshinev2_backend"]
+    },
     "sunshinev2_comment": {
       "main": "src/sunshinev2_comment/main.mo",
       "type": "motoko",
-      "dependencies": [
-        "sunshinev2_backend"
-      ]
+      "dependencies": ["sunshinev2_backend"]
     },
     "sunshinev2_frontend": {
       "dependencies": [
         "sunshinev2_backend",
         "internet_identity",
         "sunshinev2_prediction",
-        "sunshinev2_comment"
+        "sunshinev2_comment",
+        "sunshinev2_chat"
       ],
-      "source": [
-        "src/sunshinev2_frontend/dist"
-      ],
+      "source": ["src/sunshinev2_frontend/dist"],
       "type": "assets",
       "workspace": "sunshinev2_frontend"
     },

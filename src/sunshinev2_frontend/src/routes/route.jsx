@@ -4,6 +4,7 @@ import NewsPage from '../pages/NewsPage'
 import PredictionPage from '../pages/PredictionPage'
 import PortfolioPage from '../pages/PortfolioPage'
 import AnalyticsPage from '../pages/AnalyticsPage'
+import ChatPage from '../pages/ChatPage'
 
 export const ROUTES = [
   {
@@ -25,5 +26,9 @@ export const ROUTES = [
   {
     path: '/analytics',
     element: <AnalyticsPage />,
+  },
+  {
+    path: '/chat',
+    element: <ChatPage />,
   },
 ]

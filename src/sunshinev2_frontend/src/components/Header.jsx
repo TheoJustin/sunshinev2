@@ -100,7 +100,7 @@ function Header() {
             </span>
           </motion.div>
           <div className="hidden md:flex items-center space-x-8">
-            {['Features', 'Analytics', 'Predictions', 'News', 'Portfolio'].map(item => (
+            {['Features', 'Analytics', 'Predictions', 'News', 'Portfolio', 'Chat'].map(item => (
               <motion.a
                 key={item}
                 href={`/${item === 'Features' ? `#${item.toLowerCase()}` : item.toLowerCase()}`}
