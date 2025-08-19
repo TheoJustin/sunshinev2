@@ -4,6 +4,7 @@ import { Card } from '../ui/card'
 import { Button } from '../ui/button'
 import { sunshinev2_chat, createActor } from 'declarations/sunshinev2_chat'
 import { sunshinev2_backend, createActor as createBackendActor } from 'declarations/sunshinev2_backend'
+import { DUMMY_COIN_LIST } from '../../constants/graph' 
 
 export default function ChatTest() {
   const { identity, authenticated } = useAuth()
@@ -176,6 +177,36 @@ export default function ChatTest() {
     }
   }
 
+  const generateOfficialGroups = async () => {
+    if (!authenticated || !identity) {
+      setResult('Please login first')
+      return
+    }
+
+    try {
+      setLoading(true)
+      
+      const actor = sunshinev2_chat || createActor('ufxgi-4p777-77774-qaadq-cai', { agentOptions: { identity } })
+      
+      const principal = identity.getPrincipal()
+      
+      const result = await actor.generateOfficialGroup(principal, DUMMY_COIN_LIST.map(coin => coin.id), DUMMY_COIN_LIST.map(coin => coin.link))
+      console.log('Official groups result:', result)
+      
+      if (result.ok !== undefined) {
+        setResult('Official groups created successfully!')
+      } else {
+        setResult(`Error creating official groups: ${result.err}`)
+      }
+      
+    } catch (error) {
+      console.error('Dummy groups error:', error)
+      setResult(`Error: ${error.message || error}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <Card className="p-6 bg-gray-800 border-gray-700 max-w-md mx-auto mt-8">
       <h3 className="text-lg font-semibold text-white mb-4">Chat Connection Test [Live Demo Only]</h3>
@@ -219,6 +250,14 @@ export default function ChatTest() {
           className="w-full bg-purple-600 hover:bg-purple-700"
         >
           {loading ? 'Creating...' : 'Create Dummy Groups'}
+        </Button>
+
+        <Button
+          onClick={generateOfficialGroups}
+          disabled={loading}
+          className="w-full bg-purple-600 hover:bg-purple-700"
+        >
+          {loading ? 'Creating...' : 'Create Official Groups'}
         </Button>
       </div>
       

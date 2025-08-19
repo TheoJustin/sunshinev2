@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Card } from '../ui/card'
 import { Button } from '../ui/button'
-import { RiRefreshLine, RiGroupLine, RiUserLine, RiAddLine, RiSearchLine } from '@remixicon/react'
+import { RiRefreshLine, RiGroupLine, RiUserLine, RiAddLine, RiSearchLine, RiCheckLine } from '@remixicon/react'
 import CreateGroupModal from './CreateGroupModal'
 import AddFriendModal from './AddFriendModal'
 import BrowseGroupsModal from './BrowseGroupsModal'
@@ -110,8 +110,9 @@ export default function ChatSidebar({
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-white truncate">
+                          <h3 className="font-medium text-white truncate flex items-center">
                             {group[0]} {/* groupName */}
+                            {group[4] ? <RiCheckLine size={16} className="ml-2 text-green-400 shrink-0" /> : null}
                           </h3>
                           <p className="text-sm text-gray-400 truncate">
                             {group[1] || 'No messages yet'} {/* last message */}

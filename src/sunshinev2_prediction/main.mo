@@ -36,6 +36,7 @@ persistent actor {
       max_response_bytes = null;
       headers = request_headers;
       body = null;
+      is_replicated = null;
       method = #get;
       transform = ?{
         function = transform;

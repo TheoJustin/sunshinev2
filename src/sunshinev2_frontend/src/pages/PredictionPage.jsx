@@ -8,16 +8,22 @@ import { TrendingUp, Search, MessageCircle, User, Clock } from 'lucide-react'
 import { DUMMY_COIN_LIST, DUMMY_HISTORICAL_DATA } from '../constants/graph'
 import { sunshinev2_comment } from '../../../declarations/sunshinev2_comment'
 import { AuthClient } from '@dfinity/auth-client'
+import { sunshinev2_chat, createActor } from '../../../declarations/sunshinev2_chat'
+import { useAuth } from '@ic-reactor/react'
+import { Button } from '../components/ui/button'
 
 function PredictionPage() {
+  const { identity, authenticated } = useAuth()
   const [inputValue, setInputValue] = useState('')
   const [predictionData, setPredictionData] = useState([])
   const [selectedCoin, setSelectedCoin] = useState('bitcoin')
   const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingGroup, setIsLoadingGroup] = useState(false)
   const [comments, setComments] = useState([])
   const [isLoadingComments, setIsLoadingComments] = useState(false)
   const [isSubmittingComment, setIsSubmittingComment] = useState(false)
+  const [joinedOfficialGroup, setJoinedOfficialGroup] = useState(false)
   const cache = useRef(new Map())
 
   async function fetchPredictions(coin = 'bitcoin') {
@@ -99,9 +105,31 @@ function PredictionPage() {
     }
   }
 
+  async function fetchOfficialGroup(coin) {
+    const authClient = await AuthClient.create()
+    const identity = authClient.getIdentity()
+    const principal = identity.getPrincipal()
+    const joined = await sunshinev2_chat.isJoinedGroupPublic(coin, principal)
+    console.log('Joined:', joined)
+    if (joined.ok) {
+      setJoinedOfficialGroup(joined.ok)
+    }
+  }
+
+  async function joinOfficialGroup(coin) {
+    setIsLoadingGroup(true)
+    const result = await sunshinev2_chat.addGroupMember(identity.getPrincipal(), coin)
+    console.log('Joined:', result)
+    if (result.ok) {
+      setJoinedOfficialGroup(true)
+    }
+    setIsLoadingGroup(false)
+  }
+
   useEffect(() => {
     fetchPredictions(selectedCoin)
     fetchComments(selectedCoin)
+    fetchOfficialGroup(selectedCoin)
   }, [selectedCoin])
 
   const handleCoinSelect = coinId => {
@@ -259,9 +287,9 @@ function PredictionPage() {
         <div className="flex-1 p-6">
           <div className="max-w-6xl mx-auto">
             <div className="mb-6">
-              <div className="flex items-center space-x-3 mb-2">
+              <div className="flex w-full items-center space-x-3 mb-2">
                 <img src={selectedCoinData.link} className='w-12 h-12 m-0 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg'></img>
-                <div>
+                <div className="flex-1">
                   <h1 className="text-2xl font-bold text-white">
                     {selectedCoinData?.name || 'Bitcoin'} Predictions
                   </h1>
@@ -269,6 +297,16 @@ function PredictionPage() {
                     AI-powered price predictions for {selectedCoinData?.symbol || 'BTC'}
                   </p>
                 </div>
+                {joinedOfficialGroup ? <div className='flex items-center gap-2 ml-auto'>
+                  <Button>Joined Official Group</Button>
+                </div> : <div className='flex items-center gap-2 ml-auto'>
+                  <Button
+                    onClick={() => {
+                      joinOfficialGroup(selectedCoin)
+                    }}
+                    disabled={isLoadingGroup}
+                  >Join Official Group</Button>
+                </div>}
               </div>
             </div>
 

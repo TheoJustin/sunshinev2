@@ -28,7 +28,9 @@ export default function CreateGroupModal({ onClose, onSuccess }) {
         formData.groupName,
         principal,
         formData.description,
-        formData.imageUrl || 'https://via.placeholder.com/100'
+        formData.imageUrl || 'https://via.placeholder.com/100',
+        false,
+        ""
       )
 
       console.log('Create group result:', result)

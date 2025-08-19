@@ -11,7 +11,7 @@ import Bool "mo:base/Bool";
 import Array "mo:base/Array";
 import Nat "mo:base/Nat";
 import Iter "mo:base/Iter";
-import Vector "mo:vector/Class";
+import Vector "mo:vector/Class";    
 
 persistent actor {
     type Chat = {
@@ -42,6 +42,7 @@ persistent actor {
         timestamp : Time.Time;
         groupMembers : [Principal];
         messages : [Text];
+        isOfficial : Bool;
     };
 
     transient let groups = TrieMap.TrieMap<Text, Group>(Text.equal, Text.hash);
@@ -55,8 +56,13 @@ persistent actor {
     };
 
     // bikin group
-    public shared func createGroup(groupName : Text, userCreator : Principal, description : Text, imageUrl : Text) : async Result.Result<(), Text> {
-        let newId = await generateUUID();
+    public shared func createGroup(groupName : Text, userCreator : Principal, description : Text, imageUrl : Text, isOfficial : Bool, id: Text) : async Result.Result<(), Text> {
+        var newId : Text = id;
+
+        if (newId == "") {
+            newId := await generateUUID();
+        };
+        
         let user = await User.getUserById(userCreator);
         if (Principal.isAnonymous(userCreator)) {
             return #err("Unauthorized");
@@ -74,6 +80,7 @@ persistent actor {
                     groupMembers = Vector.toArray(groupMem);
                     messages = [];
                     imageUrl = imageUrl;
+                    isOfficial = isOfficial;
                 };
                 groups.put(newId, newGroup);
                 return #ok();
@@ -110,6 +117,7 @@ persistent actor {
                                     groupMembers = newUsers;
                                     messages = group.messages;
                                     imageUrl = group.imageUrl;
+                                    isOfficial = group.isOfficial;
                                 };
                                 groups.put(groupId, newGroup);
                                 return #ok("Left successfully");
@@ -155,11 +163,11 @@ persistent actor {
         };
 
         if (dummyGenerated == false) {
-            var test = await createGroup("Nihility", userCreator, "Nihility Group", "https://res.cloudinary.com/dau03r7yn/image/upload/v1715586552/hltdoqe1psizoygjr5d6.png");
+            var test = await createGroup("Nihility", userCreator, "Nihility Group", "https://res.cloudinary.com/dau03r7yn/image/upload/v1715586552/hltdoqe1psizoygjr5d6.png", false, "");
             if (await checkResult(test)) {
-                test := await createGroup("Erudition", userCreator, "Erudition Group", "https://res.cloudinary.com/dau03r7yn/image/upload/v1715586524/rdnho1zgnhjquyvc0auf.png");
+                test := await createGroup("Erudition", userCreator, "Erudition Group", "https://res.cloudinary.com/dau03r7yn/image/upload/v1715586524/rdnho1zgnhjquyvc0auf.png", false, "");
                 if (await checkResult(test)) {
-                    test := await createGroup("Abundance", userCreator, "Abundance Group", "https://res.cloudinary.com/dau03r7yn/image/upload/v1715586539/k1uwn4hxewkwxovzq6c7.png");
+                    test := await createGroup("Abundance", userCreator, "Abundance Group", "https://res.cloudinary.com/dau03r7yn/image/upload/v1715586539/k1uwn4hxewkwxovzq6c7.png", false, "");
                     if (await checkResult(test)) {
                         return #ok();
                     } else {
@@ -177,7 +185,25 @@ persistent actor {
         return #err("alr generated");
     };
 
-    public shared query func getGroupById(groupId : Text) : async Result.Result<Group, Text> {
+    public shared func generateOfficialGroup(userCreator : Principal, names : [Text], images : [Text]) : async Result.Result<(), Text> {
+
+        if (Principal.isAnonymous(userCreator)) {
+            return #err("Unauthorized");
+        };
+
+        if (dummyGenerated == false) {
+            var index = 0;
+            for (i in names.vals()) {
+                let test = await createGroup(i, userCreator, i , images[index], true, i);
+                index += 1;
+            };
+            dummyGenerated := true;
+            return #ok();
+        };
+        return #err("alr generated");
+    };
+
+    public query func getGroupById(groupId : Text) : async Result.Result<Group, Text> {
         let group = groups.get(groupId);
         switch (group) {
             case (?group) {
@@ -228,6 +254,7 @@ persistent actor {
                             groupMembers = group.groupMembers;
                             messages = newChat;
                             imageUrl = group.imageUrl;
+                            isOfficial = group.isOfficial;
                         };
                         groups.put(groupId, newGroup);
                     };
@@ -268,6 +295,7 @@ persistent actor {
                             groupMembers = newUsers;
                             messages = group.messages;
                             imageUrl = group.imageUrl;
+                            isOfficial = group.isOfficial;
                         };
                         groups.put(groupId, newGroup);
                     };
@@ -422,8 +450,20 @@ persistent actor {
         };
     };
 
-    public shared func getAllGroups(groupName : Text, currUser : Principal) : async Result.Result<[(Text, Text, Text, Text)], Text> {
-        var allGroups = Vector.Vector<(Text, Text, Text, Text)>();
+    public query func isJoinedGroupPublic(groupId : Text, currUser : Principal) : async Result.Result<Bool, Text> {
+        let group = groups.get(groupId);
+        switch (group) {
+            case (?group) {
+                return #ok(isJoinedGroup(group, currUser));
+            };
+            case (null) {
+                return #err("Failed to get group");
+            };
+        };
+    };
+
+    public shared func getAllGroups(groupName : Text, currUser : Principal) : async Result.Result<[(Text, Text, Text, Text, Bool)], Text> {
+        var allGroups = Vector.Vector<(Text, Text, Text, Text, Bool)>();
         for (group in groups.vals()) {
             let joined = isJoinedGroup(group, currUser);
             let contains = containsInsensitive(group.groupName, groupName);
@@ -437,7 +477,7 @@ persistent actor {
                             let msgContent = chat.message;
                             let username = await User.getName(chat.user);
                             let msg = username # " : " # msgContent;
-                            allGroups.add(group.groupName, msg, group.id, group.imageUrl);
+                            allGroups.add(group.groupName, msg, group.id, group.imageUrl, group.isOfficial);
                         };
                         case (#err(msg)) {
 
@@ -445,7 +485,7 @@ persistent actor {
                     };
                 } else {
                     let msg = "";
-                    allGroups.add(group.groupName, msg, group.id, group.imageUrl);
+                    allGroups.add(group.groupName, msg, group.id, group.imageUrl, group.isOfficial);
                 };
             };
         };
@@ -792,6 +832,7 @@ persistent actor {
                             groupMembers = group.groupMembers;
                             messages = newChat;
                             imageUrl = group.imageUrl;
+                            isOfficial = group.isOfficial;
                         };
                         groups.put(groupId, newGroup);
                     };
