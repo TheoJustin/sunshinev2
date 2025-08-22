@@ -22,8 +22,8 @@ What makes us different?
 ## 🛠 Tech Stack
 - **Frontend:** React.js  
 - **Styling:** Tailwind CSS  
-- **Backend:** Motoko (ICP Canisters)  
-- **AI Engine:** TensorFlow, Keras, Flask  
+- **Backend:** Motoko (ICP Canisters)
+- **AI Model & Services:** TensorFlow, Keras, Flask, NumPY, Pandas
 
 ---
 
@@ -61,38 +61,17 @@ npm run generate
 # Start frontend
 npm install
 npm start
-```
-
-### ▶️ Start AI Engine
-Navigate to `ai-engine` folder:
-```bash
-pip install -r requirements.txt
-python app.py
-```
-
----
-
-## 📂 Project Structure
-```
-signal-scribe/
-│
-├── frontend/       # React.js + Tailwind UI
-├── backend/        # Motoko Canisters
-├── ai-engine/      # TensorFlow/Keras + Flask API
-└── README.md
-```
 
 ---
 
 ## 🚧 Roadmap
-- [ ] Mobile App Integration  
-- [ ] Multi-Chain Support  
-- [ ] Advanced AI with RL  
-
----
-
-## 👥 Contributors
-- **Your Name** – Full-stack Developer & AI Engineer  
+- [ ] Notification
+- [ ] Watchlists
+- [ ] SignalScribe Revenue
+- [ ] Enhanced AI
+- [ ] More Crypto Coin Predictions
+- [ ] Chatbot
+- [ ] Realtime AI Recommendation Per Hour
 
 ---
 
